@@ -80,23 +80,11 @@ ApplicationWindow {
         Column {
             anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
             spacing: 6
-            Row {
-                spacing: 12
-                bottomPadding: 18; topPadding: 6; leftPadding: 4
-                Image { source: "lwe.svg"; width: 40; height: 40; sourceSize: Qt.size(80, 80); visible: status === Image.Ready }
-                Column {
-                    anchors.verticalCenter: parent.verticalCenter
-                    Text {
-                        text: "Wallpaper"
-                        font.family: Theme.font; font.pixelSize: 19; font.weight: Font.Black
-                        color: Theme.text
-                    }
-                    Text {
-                        text: "ENGINE · LINUX"
-                        font.family: Theme.font; font.pixelSize: 10; font.letterSpacing: 2.2; font.weight: Font.DemiBold
-                        color: Theme.accent2
-                    }
-                }
+            Text {
+                text: "Wallpaper Engine"
+                leftPadding: 6; topPadding: 6; bottomPadding: 22
+                font.family: Theme.font; font.pixelSize: 17; font.weight: Font.DemiBold
+                color: Theme.text
             }
             Repeater {
                 model: [["grid", "Bibliothek"], ["heart", "Favoriten"], ["monitor", "Monitore"], ["settings", "Einstellungen"]]
