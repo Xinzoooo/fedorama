@@ -19,6 +19,7 @@ from .audio import AudioAnalyzer
 from .bridge import Bridge
 from .config import Config
 from .library import Library
+from .models import FilterModel, WallpaperModel
 
 AUTOSTART = Path.home() / ".config/autostart/lwe.desktop"
 PARAM_KEYS = {"brightness", "hue", "saturation", "speed", "renderScale", "parallax", "fill",
@@ -54,6 +55,15 @@ class Engine(QObject):
         self._last_change: dict[str, float] = {}
         self._theme = {}
         self._load_theme()
+        self._items = []                       # cached list for QML (lwe.wallpapers)
+        self.model = WallpaperModel(self)
+        self.proxy = FilterModel(self.model)
+        self._rebuild()
+        self._pending_params = set()
+        self._param_timer = QTimer(self)
+        self._param_timer.setSingleShot(True)
+        self._param_timer.setInterval(180)    # slider drags: push to Plasma at most ~5x/s
+        self._param_timer.timeout.connect(self._flush_params)
         self.headless = headless
         self.refresh_screens()
         for s in self.screen_list():            # rotation interval counts from app start
@@ -263,6 +273,7 @@ class Engine(QObject):
     def _on_optimized(self, wid, ok, how):
         self._opt_busy = False
         self.lib.scan()
+        self._rebuild()
         self.libraryChanged.emit()
         w = self.lib.get(wid)
         if ok and w:
@@ -321,16 +332,39 @@ class Engine(QObject):
         self._theme = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
 
     # ================================================================ QML API
-    @Property("QVariantList", notify=libraryChanged)
+    def wallpaper_dict(self, wid: str) -> dict:
+        w = self.lib.get(wid)
+        d = w.to_dict()
+        d["favorite"] = w.id in self.cfg.data["favorites"]
+        d["params"] = self.merged_params(w.id)
+        return d
+
+    def wallpaper_dicts(self) -> list[dict]:
+        return [self.wallpaper_dict(w.id) for w in self.lib.ordered()]
+
+    def _rebuild(self):
+        """Library structure changed (scan/import/delete): reset the grid model."""
+        self.model.reload()
+        self._items = list(self.model.rows)
+        self.itemsChanged.emit()
+
+    def _item_changed(self, wid: str):
+        """One wallpaper changed: update only its row."""
+        self.model.update(wid)
+        self._items = list(self.model.rows)
+        if self.proxy.favoritesOnly:
+            self.proxy.invalidate()
+        self.itemsChanged.emit()
+
+    itemsChanged = Signal()
+
+    @Property("QVariantList", notify=itemsChanged)
     def wallpapers(self):
-        favs = set(self.cfg.data["favorites"])
-        out = []
-        for w in self.lib.ordered():
-            d = w.to_dict()
-            d["favorite"] = w.id in favs
-            d["params"] = self.merged_params(w.id)
-            out.append(d)
-        return out
+        return self._items
+
+    @Property(QObject, constant=True)
+    def library(self):
+        return self.proxy
 
     @Property("QVariantList", notify=libraryChanged)
     def allTags(self):
@@ -402,16 +436,22 @@ class Engine(QObject):
         if key not in PARAM_KEYS:
             return
         self.cfg.data["params"].setdefault(wid, {})[key] = value
+        self._item_changed(wid)                 # previews update immediately
+        self._pending_params.add(wid)
+        self._param_timer.start()               # disk + Plasma: coalesced
+
+    def _flush_params(self):
         self.cfg.save()
-        self._reapply_wallpaper(wid)
-        self.libraryChanged.emit()
+        for wid in self._pending_params:
+            self._reapply_wallpaper(wid)
+        self._pending_params.clear()
 
     @Slot(str)
     def resetParams(self, wid):
         self.cfg.data["params"].pop(wid, None)
         self.cfg.save()
         self._reapply_wallpaper(wid)
-        self.libraryChanged.emit()
+        self._item_changed(wid)
 
     @Slot(str, result="QVariantMap")
     def params(self, wid):
@@ -425,7 +465,7 @@ class Engine(QObject):
         else:
             f.append(wid)
         self.cfg.save()
-        self.libraryChanged.emit()
+        self._item_changed(wid)
 
     @Slot("QVariantList", result=int)
     def importUrls(self, urls):
@@ -437,6 +477,7 @@ class Engine(QObject):
             ok, err = self.lib.import_path(Path(p))
             total += ok
             errors += err
+        self._rebuild()
         self.libraryChanged.emit()
         if total:
             self.toast.emit(f"{len(total)} Wallpaper importiert", "ok")
@@ -456,6 +497,7 @@ class Engine(QObject):
                 self.cfg.data["favorites"].remove(wid)
             self.cfg.data["params"].pop(wid, None)
             self.cfg.save()
+            self._rebuild()
             self.libraryChanged.emit()
             self.toast.emit("Wallpaper gelöscht", "info")
         return ok
@@ -464,6 +506,7 @@ class Engine(QObject):
     def renameWallpaper(self, wid, title, tags):
         ok = self.lib.rename(wid, title, [t for t in tags.split(",")])
         if ok:
+            self._rebuild()
             self.libraryChanged.emit()
         return ok
 
@@ -534,9 +577,12 @@ class Engine(QObject):
     def refresh(self):
         self.lib.scan()
         self.refresh_screens()
+        self._rebuild()
         self.libraryChanged.emit()
 
     def shutdown(self):
+        if self._pending_params:
+            self._flush_params()
         self.audio.stop()
         if self.bridge:
             self.bridge.stop()

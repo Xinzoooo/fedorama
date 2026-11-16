@@ -27,7 +27,7 @@ Glass {
 
         Column {
             id: col
-            width: flick.width
+            width: flick.width - 14
             spacing: 16
 
             // preview
@@ -43,7 +43,7 @@ Glass {
                     Preview {
                         id: pv
                         anchors.fill: parent
-                        wp: panel.wp
+                        wp: panel.visible ? panel.wp : null      // unload (e.g. video decoder) when closed
                         running: panel.visible && Qt.application.state === Qt.ApplicationActive
                         paramsOverride: ({ muted: true })
                         mouse: pvHover.hovered ? Qt.vector2d(pvHover.point.position.x / width, pvHover.point.position.y / height) : Qt.vector2d(0.5, 0.5)

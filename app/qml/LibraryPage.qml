@@ -8,34 +8,12 @@ Item {
     property bool favoritesOnly: false
     property string selectedId: ""
     property string search: ""
-    property var activeTags: []
-    property string typeFilter: ""
     signal openDetail(string id)
 
-    function matches(w) {
-        if (favoritesOnly && !w.favorite) return false
-        if (typeFilter !== "" && w.type !== typeFilter) return false
-        for (var i = 0; i < activeTags.length; i++)
-            if (w.tags.indexOf(activeTags[i]) < 0) return false
-        if (search !== "") {
-            var s = search.toLowerCase()
-            var hay = (w.title + " " + w.description + " " + w.tags.join(" ") + " " + w.type).toLowerCase()
-            if (hay.indexOf(s) < 0) return false
-        }
-        return true
-    }
-    readonly property var filtered: {
-        var out = []
-        var all = lwe.wallpapers
-        for (var i = 0; i < all.length; i++) if (matches(all[i])) out.push(all[i])
-        return out
-    }
-    function toggleTag(t) {
-        var a = activeTags.slice()
-        var i = a.indexOf(t)
-        if (i >= 0) a.splice(i, 1); else a.push(t)
-        activeTags = a
-    }
+    // filtering happens in Python (lwe.library is a proxy model): only changed tiles update
+    onFavoritesOnlyChanged: lwe.library.favoritesOnly = favoritesOnly
+    onSearchChanged: lwe.library.search = search
+    Component.onCompleted: { lwe.library.favoritesOnly = favoritesOnly; lwe.library.search = search }
 
     // ------------------------------------------------------------ header
     Column {
@@ -94,32 +72,23 @@ Item {
         readonly property int cols: Math.max(1, Math.floor(width / Theme.tileWidth))
         cellWidth: Math.floor(width / cols)
         cellHeight: Math.round(cellWidth * 9 / 16) + 4
-        model: page.filtered
+        model: lwe.library
         cacheBuffer: 400
         boundsBehavior: Flickable.StopAtBounds
         ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
         delegate: Tile {
             width: grid.cellWidth; height: grid.cellHeight
-            wp: modelData
-            selected: modelData.id === page.selectedId
-            onClicked: page.openDetail(modelData.id)
-            onFavoriteClicked: lwe.toggleFavorite(modelData.id)
-        }
-        // the model is rebuilt on every library change: keep the scroll position
-        property real keepY: 0
-        property bool restoring: false
-        onContentYChanged: if (!restoring) keepY = contentY
-        onModelChanged: {
-            restoring = true
-            Qt.callLater(function() {
-                grid.contentY = Math.max(0, Math.min(grid.keepY, grid.contentHeight - grid.height))
-                grid.restoring = false
-            })
+            required property var model
+            wp: ({ id: model.wid, title: model.title, type: model.type, thumb: model.thumb, source: model.source,
+                   favorite: model.favorite, params: model.params, error: model.error, tags: model.tags })
+            selected: model.wid === page.selectedId
+            onClicked: page.openDetail(model.wid)
+            onFavoriteClicked: lwe.toggleFavorite(model.wid)
         }
 
         Column {
             anchors.centerIn: parent
-            visible: page.filtered.length === 0
+            visible: lwe.library.count === 0
             spacing: 10
             Icon { name: page.favoritesOnly ? "heart" : "search"; size: 44; color: Theme.textDim; anchors.horizontalCenter: parent.horizontalCenter }
             Text {

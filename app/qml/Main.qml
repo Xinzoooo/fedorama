@@ -164,18 +164,18 @@ ApplicationWindow {
             selectedId: win.detailId
             onOpenDetail: (id) => win.detailId = (win.detailId === id ? "" : id)
         }
-        ScreensPage {
+        // pages are only created while shown (no hidden previews/video decoders)
+        Loader {
             anchors.fill: parent; anchors.topMargin: 10
-            visible: opacity > 0
-            opacity: win.page === 2 ? 1 : 0
-            Behavior on opacity { NumberAnimation { duration: Theme.anim } }
-            onChooseWallpaper: (screen) => { win.page = 0; toasts.push("Wähle ein Wallpaper und klicke im Detailbereich auf den Monitor " + screen + ".", "info") }
+            active: win.page === 2
+            sourceComponent: ScreensPage {
+                onChooseWallpaper: (screen) => { win.page = 0; toasts.push("Wähle ein Wallpaper und klicke im Detailbereich auf den Monitor " + screen + ".", "info") }
+            }
         }
-        SettingsPage {
+        Loader {
             anchors.fill: parent; anchors.topMargin: 10
-            visible: opacity > 0
-            opacity: win.page === 3 ? 1 : 0
-            Behavior on opacity { NumberAnimation { duration: Theme.anim } }
+            active: win.page === 3
+            sourceComponent: SettingsPage {}
         }
         DetailPanel {
             id: detail
