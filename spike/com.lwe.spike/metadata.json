@@ -1,0 +1,5 @@
+{
+  "KPlugin": { "Id": "com.lwe.spike", "Name": "LWE Spike", "Description": "feasibility test", "License": "MIT", "Version": "0.1", "Authors": [{"Name": "LWE"}] },
+  "KPackageStructure": "Plasma/Wallpaper",
+  "X-Plasma-API-Minimum-Version": "6.0"
+}

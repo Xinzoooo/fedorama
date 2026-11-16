@@ -1,0 +1,2 @@
+{ "KPlugin": { "Id": "lwecursor", "Name": "LWE Cursor Bridge", "Description": "Sends cursor position to Linux Wallpaper Engine", "License": "MIT", "Version": "0.1", "EnabledByDefault": false, "Authors": [{"Name": "LWE"}] },
+  "KPackageStructure": "KWin/Script", "X-Plasma-API": "declarativescript", "X-Plasma-MainScript": "ui/main.qml" }
