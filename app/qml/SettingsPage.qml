@@ -14,7 +14,7 @@ Item {
         Row {
             x: 22; y: 20; spacing: 10
             Icon { name: sec.icon; size: 20; color: Theme.accent2; anchors.verticalCenter: parent.verticalCenter }
-            Text { text: sec.title; color: Theme.text; font.family: Theme.font; font.pixelSize: 17; font.weight: Font.DemiBold; anchors.verticalCenter: parent.verticalCenter }
+            Text { text: sec.title; color: Theme.text; font.family: Theme.font; font.pixelSize: 14; font.weight: Font.Medium; anchors.verticalCenter: parent.verticalCenter }
         }
         Column { id: inner; x: 22; y: 58; width: parent.width - 44; spacing: 14 }
     }
@@ -23,7 +23,7 @@ Item {
         id: head
         anchors { left: parent.left; right: parent.right; top: parent.top }
         spacing: 4
-        Text { text: "Einstellungen"; color: Theme.text; font.family: Theme.font; font.pixelSize: 30; font.weight: Font.Bold }
+        Text { text: "Einstellungen"; color: Theme.text; font.family: Theme.font; font.pixelSize: 20; font.weight: Font.Medium }
         Text { text: "Gilt für alle Bildschirme. Änderungen wirken sofort."; color: Theme.textDim; font.family: Theme.font; font.pixelSize: Theme.fontSize - 1 }
     }
     Flickable {

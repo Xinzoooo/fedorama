@@ -7,9 +7,9 @@
   "colors": {
     "bg": "#0f0f11",
     "bg2": "#18181b",
-    "surface": "#161619",
-    "surfaceHover": "#1e1e22",
-    "border": "#26262b",
+    "surface": "#00000000",
+    "surfaceHover": "#1c1c20",
+    "border": "#232327",
     "text": "#ececef",
     "textDim": "#8a8a93",
     "accent": "#6c7dff",
@@ -20,11 +20,11 @@
     "shadow": "#000000"
   },
   "glow": 0,
-  "radius": 10,
-  "radiusSmall": 8,
+  "radius": 8,
+  "radiusSmall": 6,
   "fontFamily": "Inter",
   "fontFallback": "Noto Sans",
-  "fontSize": 14,
+  "fontSize": 13,
   "animationMs": 160,
   "tileWidth": 290
 }

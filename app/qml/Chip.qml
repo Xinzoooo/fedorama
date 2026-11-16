@@ -5,9 +5,9 @@ Rectangle {
     property string text
     property bool checked: false
     signal clicked()
-    height: 30
-    width: label.implicitWidth + 26
-    radius: 15
+    height: 26
+    width: label.implicitWidth + 20
+    radius: Theme.radiusSmall
     color: checked ? Theme.alpha(Theme.accent, 0.3) : (ma.containsMouse ? Theme.glassHover : Theme.glass)
     border.width: 1
     border.color: checked ? Theme.alpha(Theme.accent, 0.9) : Theme.border

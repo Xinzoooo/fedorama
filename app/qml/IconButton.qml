@@ -7,12 +7,12 @@ Item {
     property string tip
     property bool active: false
     property color tint: Theme.accent
-    property int size: 36
+    property int size: 30
     signal clicked()
     implicitWidth: size; implicitHeight: size
     Rectangle {
         anchors.fill: parent
-        radius: width / 2
+        radius: Theme.radiusSmall
         color: b.active ? Theme.alpha(b.tint, 0.28) : (ma.containsMouse ? Theme.glassHover : "transparent")
         border.width: ma.containsMouse || b.active ? 1 : 0
         border.color: Theme.alpha(b.tint, 0.6)

@@ -71,48 +71,40 @@ ApplicationWindow {
     }
 
     // ------------------------------------------------------------ sidebar
-    Glass {
+    Item {
         id: sidebar
-        anchors { left: parent.left; top: parent.top; bottom: parent.bottom; margins: 16 }
-        width: 236
-        color: Theme.flat ? Theme.glass : Theme.alpha(Theme.bg, 0.45)
+        anchors { left: parent.left; top: parent.top; bottom: parent.bottom }
+        width: 184
+        Rectangle { anchors { right: parent.right; top: parent.top; bottom: parent.bottom } width: 1; color: Theme.border }
 
         Column {
-            anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
-            spacing: 6
+            anchors { left: parent.left; right: parent.right; top: parent.top; margins: 12; topMargin: 18 }
+            spacing: 2
             Text {
                 text: "Wallpaper Engine"
-                leftPadding: 6; topPadding: 6; bottomPadding: 22
-                font.family: Theme.font; font.pixelSize: 17; font.weight: Font.DemiBold
-                color: Theme.text
+                leftPadding: 10; bottomPadding: 18
+                font.family: Theme.font; font.pixelSize: Theme.fontSize; font.weight: Font.Medium
+                color: Theme.textDim
             }
             Repeater {
                 model: [["grid", "Bibliothek"], ["heart", "Favoriten"], ["monitor", "Monitore"], ["settings", "Einstellungen"]]
                 Item {
-                    width: parent.width; height: 46
+                    width: parent.width; height: 32
                     readonly property bool active: win.page === index
                     Rectangle {
                         anchors.fill: parent
-                        radius: 12
-                        color: parent.active ? Theme.alpha(Theme.accent, 0.22) : (nav.containsMouse ? Theme.glassHover : "transparent")
-                        border.width: parent.active ? 1 : 0
-                        border.color: Theme.alpha(Theme.accent, 0.5)
-                        Behavior on color { ColorAnimation { duration: Theme.anim } }
-                    }
-                    Rectangle {
-                        width: 3; height: parent.active ? 22 : 0; radius: 2
-                        anchors { left: parent.left; leftMargin: 2; verticalCenter: parent.verticalCenter }
-                        color: Theme.accent2
-                        Behavior on height { NumberAnimation { duration: Theme.anim; easing.type: Easing.OutBack } }
+                        radius: Theme.radiusSmall
+                        color: parent.active ? Theme.glassHover : (nav.containsMouse ? Theme.alpha(Theme.text, 0.04) : "transparent")
                     }
                     Row {
-                        anchors { left: parent.left; leftMargin: 16; verticalCenter: parent.verticalCenter }
-                        spacing: 14
-                        Icon { name: modelData[0]; size: 20; color: parent.parent.active ? Theme.accent2 : Theme.textDim }
+                        anchors { left: parent.left; leftMargin: 10; verticalCenter: parent.verticalCenter }
+                        spacing: 10
+                        Icon { name: modelData[0]; size: 15; color: parent.parent.active ? Theme.text : Theme.textDim; anchors.verticalCenter: parent.verticalCenter }
                         Text {
                             text: modelData[1]
                             color: parent.parent.active ? Theme.text : Theme.textDim
-                            font.family: Theme.font; font.pixelSize: Theme.fontSize + 1; font.weight: parent.parent.active ? Font.DemiBold : Font.Normal
+                            font.family: Theme.font; font.pixelSize: Theme.fontSize
+                            anchors.verticalCenter: parent.verticalCenter
                         }
                     }
                     MouseArea { id: nav; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { win.page = index; if (index > 1) win.detailId = "" } }
@@ -120,29 +112,16 @@ ApplicationWindow {
             }
         }
 
-        // now playing / quick controls
-        Glass {
-            anchors { left: parent.left; right: parent.right; bottom: parent.bottom; margins: 12 }
-            height: 128
-            color: Theme.alpha(Theme.bg, 0.4)
-            Column {
-                anchors { fill: parent; margins: 14 }
-                spacing: 10
-                Text {
-                    text: lwe.paused ? "PAUSIERT" : "LÄUFT"
-                    color: lwe.paused ? Theme.accent3 : Theme.ok
-                    font.family: Theme.font; font.pixelSize: 11; font.letterSpacing: 2; font.weight: Font.Bold
-                }
-                Text {
-                    width: parent.width
-                    text: lwe.screens.length + (lwe.screens.length === 1 ? " Bildschirm" : " Bildschirme") + " · " + lwe.settings.fps + " FPS"
-                    color: Theme.textDim; font.family: Theme.font; font.pixelSize: Theme.fontSize - 1
-                }
-                Row {
-                    spacing: 8
-                    NeonButton { width: 120; text: lwe.paused ? "Weiter" : "Pause"; icon: lwe.paused ? "play" : "pause"; checked: lwe.paused; tint: Theme.accent3; onClicked: lwe.togglePause() }
-                    IconButton { icon: "next"; size: 40; tip: "Nächstes Wallpaper (alle Monitore)"; onClicked: lwe.nextWallpaper("") }
-                }
+        // quick controls
+        Row {
+            anchors { left: parent.left; bottom: parent.bottom; margins: 14 }
+            spacing: 4
+            IconButton { icon: lwe.paused ? "play" : "pause"; size: 28; tip: lwe.paused ? "Fortsetzen" : "Pausieren"; active: lwe.paused; onClicked: lwe.togglePause() }
+            IconButton { icon: "next"; size: 28; tip: "Nächstes Wallpaper (alle Monitore)"; onClicked: lwe.nextWallpaper("") }
+            Text {
+                text: lwe.paused ? "Pausiert" : ""
+                color: Theme.textDim; font.family: Theme.font; font.pixelSize: Theme.fontSize - 1
+                anchors.verticalCenter: parent.verticalCenter; leftPadding: 4
             }
         }
     }
@@ -150,12 +129,12 @@ ApplicationWindow {
     // ------------------------------------------------------------ content
     Item {
         id: content
-        anchors { left: sidebar.right; right: parent.right; top: parent.top; bottom: parent.bottom; margins: 16; leftMargin: 24 }
+        anchors { left: sidebar.right; right: parent.right; top: parent.top; bottom: parent.bottom; margins: 14; leftMargin: 22 }
 
         LibraryPage {
             id: lib
             anchors { left: parent.left; top: parent.top; bottom: parent.bottom; topMargin: 10 }
-            width: win.detailId && win.page <= 1 ? parent.width - detail.width - 20 : parent.width
+            width: win.detailId && win.page <= 1 ? parent.width - detail.width - 16 : parent.width
             Behavior on width { NumberAnimation { duration: Theme.anim; easing.type: Easing.OutCubic } }
             visible: opacity > 0
             opacity: win.page <= 1 ? 1 : 0
@@ -180,7 +159,7 @@ ApplicationWindow {
         DetailPanel {
             id: detail
             anchors { top: parent.top; bottom: parent.bottom; topMargin: 10 }
-            width: 420
+            width: 340
             x: win.detailId && win.page <= 1 ? parent.width - width : parent.width + 40
             Behavior on x { NumberAnimation { duration: Theme.anim + 80; easing.type: Easing.OutCubic } }
             visible: x < parent.width

@@ -13,13 +13,16 @@ Glass {
     readonly property var pr: wp ? wp.params : ({})
     function pv(k, fb) { return pr[k] === undefined ? fb : pr[k] }
     signal closeRequested()
-    color: Theme.flat ? Theme.glass : Theme.alpha(Theme.bg, 0.72)
+    color: Theme.flat ? "transparent" : Theme.alpha(Theme.bg, 0.72)
+    border.width: Theme.flat ? 0 : 1
     radius: Theme.radius
+    Rectangle { visible: Theme.flat; anchors { left: parent.left; top: parent.top; bottom: parent.bottom } width: 1; color: Theme.border }
 
     Flickable {
         id: flick
         anchors.fill: parent
         anchors.margins: 18
+        anchors.leftMargin: 20
         contentHeight: col.implicitHeight + 10
         clip: true
         boundsBehavior: Flickable.StopAtBounds
@@ -65,7 +68,7 @@ Glass {
                     Text {
                         width: parent.width - favBtn.width - 8
                         text: panel.wp ? panel.wp.title : ""
-                        color: Theme.text; font.family: Theme.font; font.pixelSize: 22; font.weight: Font.Bold
+                        color: Theme.text; font.family: Theme.font; font.pixelSize: 16; font.weight: Font.Medium
                         wrapMode: Text.WordWrap
                     }
                     IconButton {

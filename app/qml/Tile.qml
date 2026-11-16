@@ -30,9 +30,9 @@ Item {
     Item {
         id: card
         anchors.fill: parent
-        anchors.margins: 8
+        anchors.margins: 5
         property real radius: Theme.radius
-        scale: tile.hovered ? 1.035 : 1
+        scale: tile.hovered ? 1.015 : 1
         Behavior on scale { NumberAnimation { duration: Theme.anim; easing.type: Easing.OutCubic } }
 
         Item {
@@ -92,23 +92,23 @@ Item {
             anchors.fill: parent
             radius: card.radius
             color: "transparent"
-            border.width: tile.selected ? 2 : 1
+            border.width: tile.selected ? 1.5 : 0
             border.color: tile.selected ? Theme.accent2 : (tile.hovered ? Theme.alpha("#ffffff", 0.35) : Theme.border)
         }
 
         Column {
-            anchors { left: parent.left; right: parent.right; bottom: parent.bottom; margins: 14 }
+            anchors { left: parent.left; right: parent.right; bottom: parent.bottom; margins: 10 }
             spacing: 4
             Text {
                 width: parent.width
                 text: tile.wp ? tile.wp.title : ""
                 color: "#ffffff"; elide: Text.ElideRight
-                font.family: Theme.font; font.pixelSize: Theme.fontSize + 1; font.weight: Font.DemiBold
+                font.family: Theme.font; font.pixelSize: Theme.fontSize; font.weight: Font.Medium
             }
         }
         IconButton {
             anchors { right: parent.right; top: parent.top; margins: 8 }
-            size: 34
+            size: 28
             icon: tile.wp && tile.wp.favorite ? "heart-filled" : "heart"
             active: tile.wp && tile.wp.favorite
             tint: Theme.accent3

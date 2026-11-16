@@ -22,7 +22,7 @@ Item {
         id: head
         anchors { left: parent.left; right: parent.right; top: parent.top }
         spacing: 4
-        Text { text: "Monitore & Playlists"; color: Theme.text; font.family: Theme.font; font.pixelSize: 30; font.weight: Font.Bold }
+        Text { text: "Monitore & Playlists"; color: Theme.text; font.family: Theme.font; font.pixelSize: 20; font.weight: Font.Medium }
         Text { text: "Jeder Bildschirm hat sein eigenes Wallpaper und seine eigene Rotation."; color: Theme.textDim; font.family: Theme.font; font.pixelSize: Theme.fontSize - 1 }
     }
 
@@ -57,7 +57,7 @@ Item {
                         id: curCol
                         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 20 }
                         spacing: 12
-                        Text { text: page.scr ? page.scr.name + (page.scr.label !== page.scr.name ? "  ·  " + page.scr.label : "") : ""; color: Theme.text; font.family: Theme.font; font.pixelSize: 18; font.weight: Font.DemiBold; elide: Text.ElideRight; width: parent.width }
+                        Text { text: page.scr ? page.scr.name + (page.scr.label !== page.scr.name ? "  ·  " + page.scr.label : "") : ""; color: Theme.text; font.family: Theme.font; font.pixelSize: 14; font.weight: Font.Medium; elide: Text.ElideRight; width: parent.width }
                         Text { text: page.scr ? page.scr.w + " × " + page.scr.h : ""; color: Theme.textDim; font.family: Theme.font; font.pixelSize: Theme.fontSize - 1 }
                         Item {
                             width: parent.width; height: width * 9 / 16
@@ -99,7 +99,7 @@ Item {
                         Row {
                             spacing: 10
                             Icon { name: "playlist"; size: 22; color: Theme.accent2; anchors.verticalCenter: parent.verticalCenter }
-                            Text { text: "Automatisch wechseln"; color: Theme.text; font.family: Theme.font; font.pixelSize: 18; font.weight: Font.DemiBold; anchors.verticalCenter: parent.verticalCenter }
+                            Text { text: "Automatisch wechseln"; color: Theme.text; font.family: Theme.font; font.pixelSize: 14; font.weight: Font.Medium; anchors.verticalCenter: parent.verticalCenter }
                         }
                         Flow {
                             width: parent.width; spacing: 8

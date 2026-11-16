@@ -46,12 +46,12 @@ Item {
                     }
                     Rectangle {
                         anchors.fill: parent; radius: 8
-                        color: ma.containsMouse ? Theme.alpha(Theme.accent, 0.35) : Qt.rgba(0, 0, 0, 0.35)
+                        color: ma.containsMouse ? Theme.alpha(Theme.accent, 0.3) : Qt.rgba(0, 0, 0, 0.45)
                         Behavior on color { ColorAnimation { duration: Theme.anim } }
                     }
                     Rectangle {
                         anchors.fill: parent; radius: 8; color: "transparent"
-                        border.width: mon.sel || ma.containsMouse ? 2 : 1
+                        border.width: mon.sel || ma.containsMouse ? 1.5 : 0
                         border.color: mon.sel ? Theme.accent2 : (ma.containsMouse ? Theme.accent : Theme.border)
                     }
                     Text {
@@ -59,9 +59,8 @@ Item {
                         width: parent.width - 8
                         horizontalAlignment: Text.AlignHCenter
                         text: modelData.name
-                        color: "#ffffff"; font.family: Theme.font; font.pixelSize: Math.max(10, Math.min(16, parent.height / 4)); font.weight: Font.DemiBold
+                        color: "#ffffff"; font.family: Theme.font; font.pixelSize: Math.max(10, Math.min(13, parent.height / 4))
                         elide: Text.ElideRight
-                        style: Text.Outline; styleColor: Qt.rgba(0, 0, 0, 0.4)
                     }
                 }
                 MouseArea { id: ma; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: map.screenClicked(modelData.name) }

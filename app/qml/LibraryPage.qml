@@ -21,13 +21,13 @@ Item {
         anchors { left: parent.left; right: parent.right; top: parent.top }
         spacing: 16
         Item {
-            width: parent.width; height: 48
+            width: parent.width; height: 36
             Column {
                 id: titleCol
                 anchors.verticalCenter: parent.verticalCenter
                 Text {
                     text: page.favoritesOnly ? "Favoriten" : "Bibliothek"
-                    color: Theme.text; font.family: Theme.font; font.pixelSize: 30; font.weight: Font.Bold
+                    color: Theme.text; font.family: Theme.font; font.pixelSize: 20; font.weight: Font.Medium
                 }
             }
             Row {
@@ -35,9 +35,9 @@ Item {
                 spacing: 10
                 Glass {
                     width: Math.max(150, Math.min(320, header.width - titleCol.width - importRow.width - 60))
-                    height: 42; radius: 21
+                    height: 32; radius: Theme.radiusSmall
                     glowing: searchField.activeFocus
-                    Icon { id: sIcon; name: "search"; size: 18; color: Theme.textDim; anchors { left: parent.left; leftMargin: 14; verticalCenter: parent.verticalCenter } }
+                    Icon { id: sIcon; name: "search"; size: 15; color: Theme.textDim; anchors { left: parent.left; leftMargin: 14; verticalCenter: parent.verticalCenter } }
                     TextInput {
                         id: searchField
                         anchors { left: sIcon.right; right: clearBtn.left; leftMargin: 10; rightMargin: 6; verticalCenter: parent.verticalCenter }
@@ -46,11 +46,11 @@ Item {
                         onTextChanged: page.search = text
                         Text {
                             visible: !parent.text && !parent.activeFocus
-                            text: "Suchen …  (Strg+F)"; color: Theme.textDim
+                            text: "Suchen"; color: Theme.textDim
                             font: parent.font
                         }
                     }
-                    IconButton { id: clearBtn; icon: "close"; size: 28; visible: searchField.text !== ""; anchors { right: parent.right; rightMargin: 7; verticalCenter: parent.verticalCenter } onClicked: searchField.text = "" }
+                    IconButton { id: clearBtn; icon: "close"; size: 24; visible: searchField.text !== ""; anchors { right: parent.right; rightMargin: 7; verticalCenter: parent.verticalCenter } onClicked: searchField.text = "" }
                     Shortcut { sequence: "Ctrl+F"; onActivated: searchField.forceActiveFocus() }
                 }
                 Row {

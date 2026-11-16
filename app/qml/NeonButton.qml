@@ -11,8 +11,8 @@ Item {
     property bool enabledState: true
     property color tint: danger ? Theme.danger : Theme.accent
     signal clicked()
-    implicitHeight: 40
-    implicitWidth: row.implicitWidth + 32
+    implicitHeight: 32
+    implicitWidth: row.implicitWidth + 26
     opacity: enabledState ? 1 : 0.45
 
     Rectangle {
@@ -33,7 +33,7 @@ Item {
     Rectangle {
         id: bg
         anchors.fill: parent
-        radius: height / 2
+        radius: Theme.radiusSmall
         gradient: Gradient {
             orientation: Gradient.Horizontal
             GradientStop { position: 0; color: b.primary ? b.tint : (b.checked ? Theme.alpha(b.tint, 0.35) : (ma.containsMouse ? Theme.glassHover : Theme.glass)) }
@@ -48,11 +48,11 @@ Item {
         id: row
         anchors.centerIn: parent
         spacing: 8
-        Icon { name: b.icon; visible: b.icon !== ""; size: 18; anchors.verticalCenter: parent.verticalCenter; color: b.primary ? "#ffffff" : (b.danger ? Theme.danger : Theme.text) }
+        Icon { name: b.icon; visible: b.icon !== ""; size: 15; anchors.verticalCenter: parent.verticalCenter; color: b.primary ? "#ffffff" : (b.danger ? Theme.danger : Theme.text) }
         Text {
             text: b.text; visible: b.text !== ""
             color: b.primary ? "#ffffff" : (b.danger ? Theme.danger : Theme.text)
-            font.family: Theme.font; font.pixelSize: Theme.fontSize; font.weight: Font.DemiBold
+            font.family: Theme.font; font.pixelSize: Theme.fontSize; font.weight: Font.Medium
             anchors.verticalCenter: parent.verticalCenter
         }
     }
