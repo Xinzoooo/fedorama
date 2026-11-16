@@ -33,6 +33,7 @@ class Wallpaper:
     defaults: dict = field(default_factory=dict)
     preset: dict = field(default_factory=dict)
     builtin: bool = False
+    optimized: bool = False
     error: str = ""
 
     @property
@@ -72,6 +73,7 @@ def _load(d: Path, builtin: bool) -> Wallpaper | None:
         dir=d, file=m.get("file", ""), description=m.get("description", ""),
         tags=list(m.get("tags", [])), author=m.get("author", ""), license=m.get("license", ""),
         defaults=dict(m.get("defaults", {})), preset=dict(m.get("preset", {})), builtin=builtin,
+        optimized=bool(m.get("optimized", False)),
     )
     if w.type == "shader" and not (d / "shader.qsb").exists():
         w.error = "Shader nicht kompiliert"
@@ -222,3 +224,69 @@ class Library:
         meta_p.write_text(json.dumps(m, ensure_ascii=False, indent=2), encoding="utf-8")
         self.scan()
         return True
+
+
+# ------------------------------------------------------------------ video optimisation
+HW_FRIENDLY = {"av1", "vp9"}          # decoded by the GPU on current AMD/Intel with Fedora drivers
+
+
+def probe(path: Path) -> dict:
+    if not shutil.which("ffprobe"):
+        return {}
+    r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+                        "stream=codec_name,width,height", "-of", "json", str(path)],
+                       capture_output=True, text=True, timeout=30)
+    try:
+        return json.loads(r.stdout)["streams"][0]
+    except (ValueError, KeyError, IndexError):
+        return {}
+
+
+def needs_optimize(path: Path, max_h: int) -> bool:
+    s = probe(path)
+    if not s:
+        return False
+    return s.get("codec_name") not in HW_FRIENDLY or int(s.get("height", 0)) > max_h * 1.05
+
+
+def transcode(src: Path, dst: Path, max_h: int) -> tuple[bool, str]:
+    """Re-encode to AV1 at screen height. GPU (VAAPI) first, CPU (SVT-AV1) as fallback."""
+    if not shutil.which("ffmpeg"):
+        return False, "ffmpeg fehlt"
+    h = int(probe(src).get("height", max_h))
+    h = min(h, max_h)
+    h -= h % 2
+    audio = ["-c:a", "libopus", "-b:a", "128k"]
+    attempts = []
+    for dev in sorted(Path("/dev/dri").glob("renderD*")):
+        attempts.append(["ffmpeg", "-loglevel", "error", "-y", "-vaapi_device", str(dev), "-i", str(src),
+                         "-vf", f"format=nv12,hwupload,scale_vaapi=w=-2:h={h}", "-c:v", "av1_vaapi",
+                         "-b:v", "6M", "-maxrate", "9M", *audio, str(dst)])
+    attempts.append(["ffmpeg", "-loglevel", "error", "-y", "-i", str(src), "-vf", f"scale=-2:{h}",
+                     "-c:v", "libsvtav1", "-preset", "10", "-crf", "32", *audio, str(dst)])
+    err = ""
+    for cmd in attempts:
+        r = subprocess.run(cmd, capture_output=True, text=True)
+        if r.returncode == 0 and dst.exists() and probe(dst).get("codec_name") == "av1":
+            return True, "GPU" if "av1_vaapi" in cmd else "CPU"
+        err = r.stderr.strip()[-300:]
+        dst.unlink(missing_ok=True)
+    return False, err
+
+
+def optimize_wallpaper(w: "Wallpaper", max_h: int) -> tuple[bool, str]:
+    """Convert w's video in place (wallpaper.json updated). Original file is kept as original_file."""
+    src = w.dir / w.file
+    dst = w.dir / "media-av1.webm"
+    ok, how = transcode(src, dst, max_h)
+    meta_p = w.dir / "wallpaper.json"
+    m = json.loads(meta_p.read_text(encoding="utf-8"))
+    m["optimized"] = True                  # also on failure: do not retry forever
+    if ok:
+        m["file"] = dst.name
+        try:
+            src.unlink()                   # our copy/hardlink only; the user's original stays where it was
+        except OSError:
+            pass
+    meta_p.write_text(json.dumps(m, ensure_ascii=False, indent=2), encoding="utf-8")
+    return ok, how

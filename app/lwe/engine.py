@@ -7,6 +7,7 @@ import json
 import random
 import shutil
 import subprocess
+import threading
 import time
 from pathlib import Path
 
@@ -40,6 +41,7 @@ class Engine(QObject):
     themeChanged = Signal()
     toast = Signal(str, str)            # message, kind (info|error|ok)
     showWindowRequested = Signal()
+    _optimized = Signal(str, bool, str)     # from worker thread -> main thread
 
     def __init__(self, headless: bool = False):
         super().__init__()
@@ -65,6 +67,9 @@ class Engine(QObject):
             self._timer.setInterval(20_000)
             self._timer.timeout.connect(self._tick_playlists)
             self._timer.start()
+            self._optimized.connect(self._on_optimized)
+            self._opt_busy = False
+            QTimer.singleShot(8000, self.optimize_pending)
             app = QGuiApplication.instance()
             if app:
                 app.screenAdded.connect(lambda *_: QTimer.singleShot(1500, self.refresh_screens))
@@ -229,6 +234,45 @@ class Engine(QObject):
             else:
                 nxt = items[(items.index(cur) + 1) % len(items)] if cur in items else items[0]
             self.apply_to(nxt, s["name"])
+
+    # ================================================================ video optimisation
+    def _max_screen_h(self) -> int:
+        return max([s["h"] for s in self.screen_list()] or [1080])
+
+    def optimize_pending(self):
+        """Convert imported videos that the GPU cannot decode (or that are bigger than the
+        screens) to AV1 at screen size – one at a time, in the background."""
+        if self._opt_busy or not shutil.which("ffmpeg"):
+            return
+        from .library import needs_optimize, optimize_wallpaper
+        max_h = self._max_screen_h()
+        for w in self.lib.ordered():
+            if w.type != "video" or w.builtin or w.optimized:
+                continue
+            if not needs_optimize(w.dir / w.file, max_h):
+                continue
+            self._opt_busy = True
+            self.toast.emit(f"Optimiere „{w.title}“ für weniger CPU-Last …", "info")
+
+            def work(w=w):
+                ok, how = optimize_wallpaper(w, max_h)
+                self._optimized.emit(w.id, ok, how)
+            threading.Thread(target=work, name="lwe-optimize", daemon=True).start()
+            return
+
+    def _on_optimized(self, wid, ok, how):
+        self._opt_busy = False
+        self.lib.scan()
+        self.libraryChanged.emit()
+        w = self.lib.get(wid)
+        if ok and w:
+            for s in self.screen_list():
+                if s["wallpaper"] == wid and s["active"]:
+                    plasma.apply(s["index"], self._values(wid))
+            self.toast.emit(f"„{w.title}“ optimiert (AV1, {how}) – läuft jetzt über die Grafikkarte", "ok")
+        elif w:
+            self.toast.emit(f"„{w.title}“ konnte nicht optimiert werden: {how[:120]}", "error")
+        QTimer.singleShot(1000, self.optimize_pending)
 
     # ================================================================ audio / kwin / autostart
     def _sync_audio(self):
@@ -396,6 +440,8 @@ class Engine(QObject):
         self.libraryChanged.emit()
         if total:
             self.toast.emit(f"{len(total)} Wallpaper importiert", "ok")
+            if not self.headless:
+                QTimer.singleShot(500, self.optimize_pending)
         for e in errors[:3]:
             self.toast.emit(e.splitlines()[0] if len(e) > 160 else e, "error")
         if errors:
