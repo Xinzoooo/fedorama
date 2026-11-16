@@ -1,15 +1,24 @@
 # Linux Wallpaper Engine
 
-Animierte Hintergründe für **KDE Plasma 6 (Wayland)**: Live-Shader, Partikel, Videos, GIFs und Bilder –
-direkt auf dem Desktop, hinter allen Fenstern und Icons. Mit eigener Bibliothek-App, Tray-Symbol,
-Playlists, Maus- und Musik-Reaktion.
+**Lebendige Hintergründe für KDE Plasma 6 unter Wayland** – Live-Shader, Partikel, Videos und GIFs
+direkt auf dem Desktop, hinter allen Fenstern und Icons. Reagiert auf Maus und Musik, pausiert
+sich selbst, wenn du spielst. Ein Befehl installiert alles nach `~/.local`, ohne `sudo`.
 
-- 25 eigene Shader + 4 Partikel-Effekte mitgeliefert (alle selbst geschrieben, MIT-Lizenz)
-- Pro Monitor ein eigenes Wallpaper, Rotation (Intervall) oder Tag/Nacht-Wechsel
-- Pausiert automatisch bei Vollbild und bildschirmfüllenden Fenstern (pro Monitor), FPS-Limit, Render-Auflösung pro Shader
-- Reagiert auf die Maus (auch unter Fenstern) und optional auf Musik
-- Import per Drag & Drop, Datei- oder Ordner-Dialog oder Kommandozeile
-- Aussehen über Theme-Dateien (`themes/*.json`)
+![Linux Wallpaper Engine](docs/app.png)
+
+![Mitgelieferte Wallpaper](docs/gallery.jpg)
+
+## Highlights
+
+- **29 Wallpaper ab Werk** – 25 selbst geschriebene GLSL-Shader (Synthwave, Nordlicht, Galaxie,
+  Neon-Stadt, Regen am Fenster, Matrix …) und 4 Partikel-Effekte, alle unter MIT-Lizenz
+- **Echt im Hintergrund** – als Plasma-Wallpaper-Plugin, pro Monitor ein eigenes Wallpaper
+- **Eigene Inhalte** – Videos, GIFs, Bilder und Shadertoy-Shader per Drag & Drop, Ordner-Import oder CLI
+- **Spart Ressourcen** – pausiert bei Vollbild und Fenster-Vollbild (pro Monitor), FPS-Limit,
+  Render-Auflösung pro Shader; Videos werden automatisch in GPU-dekodierbares AV1 umgewandelt
+- **Interaktiv** – Parallaxe und Effekte folgen der Maus (auch unter Fenstern), Audio-Visualizer
+- **Playlists** – Rotation im Intervall oder Tag/Nacht-Wechsel, pro Monitor
+- **Unaufdringlich** – startet beim Login im Tray, schlichte App, Look komplett über `themes/*.json`
 
 ## Installieren / Deinstallieren
 
@@ -110,6 +119,7 @@ kwin/lwecursor/             KWin-Script für die Mausposition
 app/lwe/                    Python-Backend (Bibliothek, Plasma-D-Bus, Playlists, Audio, Tray, CLI)
 app/qml/                    Oberfläche
 content/wallpapers/         mitgelieferte Wallpaper (Quelltext)
+docs/                       Screenshots
 themes/                     Theme-Dateien
 spike/                      Machbarkeitstest vom Projektstart
 tools/                      Entwickler-Werkzeuge (Kontaktbogen, Texturen)
