@@ -1,0 +1,14 @@
+{
+    "KPlugin": {
+        "Id": "lwecursor",
+        "Name": "Linux Wallpaper Engine – Maus",
+        "Description": "Gibt die Mausposition an Linux Wallpaper Engine weiter (nur lokal, 127.0.0.1).",
+        "License": "MIT",
+        "Version": "1.0.0",
+        "EnabledByDefault": false,
+        "Authors": [{ "Name": "Linux Wallpaper Engine" }]
+    },
+    "KPackageStructure": "KWin/Script",
+    "X-Plasma-API": "declarativescript",
+    "X-Plasma-MainScript": "ui/main.qml"
+}

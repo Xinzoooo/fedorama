@@ -54,6 +54,8 @@ class Engine(QObject):
         self._load_theme()
         self.headless = headless
         self.refresh_screens()
+        for s in self.screen_list():            # rotation interval counts from app start
+            self._last_change[s["name"]] = time.time()
         if not headless:
             self.bridge = Bridge(int(self.cfg.g["bridgePort"]), self.audio)
             if not self.bridge.start():

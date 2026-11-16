@@ -29,6 +29,7 @@ WallpaperItem {
     readonly property rect screenRect: Qt.rect(Screen.virtualX, Screen.virtualY, Screen.width, Screen.height)
     property bool coveredFullscreen: false
     property bool coveredMaximized: false
+    property string taskDebug: ""
     readonly property bool running: !configuration.Paused
                                     && !(configuration.PauseOnFullscreen !== false && coveredFullscreen)
                                     && !(configuration.PauseOnMaximized === true && coveredMaximized)
@@ -44,7 +45,6 @@ WallpaperItem {
         id: tasks
         filterByVirtualDesktop: true
         filterByActivity: true
-        filterNotMinimized: true
         groupMode: TaskManager.TasksModel.GroupDisabled
     }
     Instantiator {
@@ -58,17 +58,20 @@ WallpaperItem {
         }
     }
     function checkCovered() {
-        var fs = false, mx = false
+        var fs = false, mx = false, d = ""
         var r = root.screenRect
         for (var i = 0; i < taskObjects.count; i++) {
             var o = taskObjects.objectAt(i)
-            if (!o || o.minimized) continue
+            if (!o) continue
+            d += " [" + o.geo.x + "," + o.geo.width + (o.fullscreen ? " F" : "") + (o.minimized ? " m" : "") + "]"
+            if (o.minimized) continue
             var cx = o.geo.x + o.geo.width / 2, cy = o.geo.y + o.geo.height / 2
             if (cx < r.x || cx >= r.x + r.width || cy < r.y || cy >= r.y + r.height) continue
             if (o.fullscreen) fs = true
             if (o.maximized) mx = true
         }
         coveredFullscreen = fs
+        taskDebug = d
         coveredMaximized = mx
     }
     Timer {
@@ -202,7 +205,7 @@ WallpaperItem {
         visible: root.cfgParams.indexOf('"debug"') >= 0
         color: "white"; style: Text.Outline; styleColor: "black"; font.pixelSize: 18
         anchors { top: parent.top; right: parent.right; margins: 40 }
-        text: "front=" + root.front + " pending=" + root.pending + " running=" + root.running + " bridge=" + root.bridgeOnline
+        text: "front=" + root.front + " pending=" + root.pending + " running=" + root.running + " bridge=" + root.bridgeOnline + " fs=" + root.coveredFullscreen + " tasks=" + taskObjects.count + " scr=" + root.screenRect + "\n" + root.taskDebug
               + "\nA: " + slotA.kind + " ready=" + slotA.ready + " op=" + slotA.opacity.toFixed(3) + " " + slotA.dbg
               + "\nB: " + slotB.kind + " ready=" + slotB.ready + " op=" + slotB.opacity.toFixed(3) + " " + slotB.dbg
               + "\nmouse=" + root.mouse.x.toFixed(2) + "," + root.mouse.y.toFixed(2) + " audio=" + root.audio.x.toFixed(2)

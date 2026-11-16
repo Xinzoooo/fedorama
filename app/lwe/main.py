@@ -28,6 +28,9 @@ def parse(argv):
     i.add_argument("paths", nargs="+")
     sub.add_parser("list", help="Wallpaper auflisten")
     sub.add_parser("screens", help="Bildschirme auflisten")
+    c = sub.add_parser("config", help="Einstellung setzen, z. B. 'lwe config fps 60' oder 'lwe config audio true'")
+    c.add_argument("key")
+    c.add_argument("value")
     sub.add_parser("quit", help="laufende Instanz beenden")
     sub.add_parser("restore", help="Plasma-Standardhintergrund wiederherstellen")
     return p.parse_args(argv)
@@ -71,6 +74,9 @@ def handle(engine, msg: dict, show_window=None, quit_app=None) -> dict:
         return {"items": [(w.id, w.type, w.title) for w in engine.lib.ordered()]}
     elif c == "screens":
         return {"items": engine.screen_list()}
+    elif c == "config":
+        engine.setGlobal(msg["key"], msg["value"])
+        return {"ok": True, "settings": engine.settings}
     elif c == "restore":
         engine.restoreDefault()
     elif c == "quit" and quit_app:
@@ -98,6 +104,10 @@ def main(argv=None):
         msg["screen"] = args.screen
     if cmd == "set":
         msg["id"] = args.id
+    if cmd == "config":
+        v = args.value
+        msg["key"] = args.key
+        msg["value"] = (v.lower() in ("1", "true", "on", "ja")) if v.lower() in ("1", "0", "true", "false", "on", "off", "ja", "nein") else (int(v) if v.isdigit() else v)
     if cmd == "import":
         msg["paths"] = [str(Path(p).resolve()) for p in args.paths]
 

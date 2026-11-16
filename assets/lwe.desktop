@@ -1,0 +1,20 @@
+[Desktop Entry]
+Type=Application
+Name=Linux Wallpaper Engine
+GenericName=Animierte Hintergründe
+Comment=Animierte Hintergründe: Shader, Videos, GIFs und Partikel
+Exec=@BIN@
+Icon=lwe
+Terminal=false
+Categories=Utility;Settings;DesktopSettings;Qt;
+Keywords=wallpaper;hintergrund;live;animated;shader;video;
+StartupWMClass=lwe
+Actions=pause;next;
+
+[Desktop Action pause]
+Name=Pause umschalten
+Exec=@BIN@ toggle
+
+[Desktop Action next]
+Name=Nächstes Wallpaper
+Exec=@BIN@ next
