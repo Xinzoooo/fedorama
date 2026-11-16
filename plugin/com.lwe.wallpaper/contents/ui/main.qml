@@ -67,7 +67,12 @@ WallpaperItem {
             if (o.minimized) continue
             var cx = o.geo.x + o.geo.width / 2, cy = o.geo.y + o.geo.height / 2
             if (cx < r.x || cx >= r.x + r.width || cy < r.y || cy >= r.y + r.height) continue
-            if (o.fullscreen) fs = true
+            // real fullscreen, or a borderless window covering the whole monitor
+            // ("windowed fullscreen" in games, video players, ...)
+            var covers = o.geo.x <= r.x + 2 && o.geo.y <= r.y + 2
+                         && o.geo.x + o.geo.width >= r.x + r.width - 2
+                         && o.geo.y + o.geo.height >= r.y + r.height - 2
+            if (o.fullscreen || covers) fs = true
             if (o.maximized) mx = true
         }
         coveredFullscreen = fs

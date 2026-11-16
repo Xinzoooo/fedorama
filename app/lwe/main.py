@@ -12,6 +12,8 @@ SOCKET = f"lwe-{os.getuid()}"
 
 
 def parse(argv):
+    # drop arguments a session manager may append (e.g. -session <id>)
+    argv = [a for i, a in enumerate(argv) if not (a == "-session" or (i > 0 and argv[i - 1] == "-session"))]
     p = argparse.ArgumentParser(prog="lwe", description="Linux Wallpaper Engine")
     p.add_argument("--tray", action="store_true", help="im Hintergrund starten (Tray, Playlists, Live-Daten)")
     sub = p.add_subparsers(dest="cmd")
@@ -138,6 +140,13 @@ def main(argv=None):
     app.setApplicationName("Linux Wallpaper Engine")
     app.setOrganizationName("lwe")
     app.setQuitOnLastWindowClosed(False)
+    # Never let the session manager restore us with an open window at login;
+    # the autostart entry (lwe --tray) starts us in the background instead.
+    from PySide6.QtGui import QSessionManager
+    def no_restore(sm):
+        sm.setRestartHint(QSessionManager.RestartNever)
+    app.saveStateRequest.connect(no_restore)
+    app.commitDataRequest.connect(no_restore)
 
     if send({"cmd": "show" if not args.tray else "noop"}) is not None:
         return                                       # already running

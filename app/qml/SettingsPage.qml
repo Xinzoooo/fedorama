@@ -46,7 +46,7 @@ Item {
                     onMoved: (v) => fpsTimer.restartWith(Math.round(v))
                     Timer { id: fpsTimer; interval: 350; property int v: 30; function restartWith(x) { v = x; restart() } onTriggered: lwe.setGlobal("fps", v) }
                 }
-                Toggle { width: parent.width; text: "Bei Vollbild-Fenstern und Spielen pausieren"; hint: "Pro Monitor – nur der Bildschirm mit dem Vollbild-Fenster pausiert."; checked: page.s.pauseOnFullscreen; onToggled: (v) => lwe.setGlobal("pauseOnFullscreen", v) }
+                Toggle { width: parent.width; text: "Bei Vollbild-Fenstern und Spielen pausieren"; hint: "Pro Monitor – auch bei randlosen Fenstern, die den ganzen Bildschirm bedecken."; checked: page.s.pauseOnFullscreen; onToggled: (v) => lwe.setGlobal("pauseOnFullscreen", v) }
                 Toggle { width: parent.width; text: "Bei maximierten Fenstern pausieren"; hint: "Spart Strom, wenn der Desktop ohnehin verdeckt ist."; checked: page.s.pauseOnMaximized; onToggled: (v) => lwe.setGlobal("pauseOnMaximized", v) }
                 NeonSlider {
                     width: parent.width; text: "Überblendung beim Wechsel"

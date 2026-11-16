@@ -6,7 +6,7 @@ Playlists, Maus- und Musik-Reaktion.
 
 - 25 eigene Shader + 4 Partikel-Effekte mitgeliefert (alle selbst geschrieben, MIT-Lizenz)
 - Pro Monitor ein eigenes Wallpaper, Rotation (Intervall) oder Tag/Nacht-Wechsel
-- Pausiert automatisch bei Vollbild (pro Monitor), FPS-Limit, Render-Auflösung pro Shader
+- Pausiert automatisch bei Vollbild und bildschirmfüllenden Fenstern (pro Monitor), FPS-Limit, Render-Auflösung pro Shader
 - Reagiert auf die Maus (auch unter Fenstern) und optional auf Musik
 - Import per Drag & Drop, Datei- oder Ordner-Dialog oder Kommandozeile
 - Aussehen über Theme-Dateien (`themes/*.json`)
