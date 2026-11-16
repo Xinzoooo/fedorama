@@ -51,10 +51,6 @@ Item {
                     text: page.favoritesOnly ? "Favoriten" : "Bibliothek"
                     color: Theme.text; font.family: Theme.font; font.pixelSize: 30; font.weight: Font.Bold
                 }
-                Text {
-                    text: page.filtered.length + " von " + lwe.wallpapers.length + " Wallpapern"
-                    color: Theme.textDim; font.family: Theme.font; font.pixelSize: Theme.fontSize - 1
-                }
             }
             Row {
                 anchors { right: parent.right; verticalCenter: parent.verticalCenter }
@@ -84,28 +80,6 @@ Item {
                     spacing: 10
                     NeonButton { text: "Ordner"; icon: "folder-plus"; onClicked: folderDialog.open() }
                     NeonButton { text: "Importieren"; icon: "upload"; primary: true; onClicked: fileDialog.open() }
-                }
-            }
-        }
-        // filters
-        Flow {
-            width: parent.width
-            spacing: 8
-            Repeater {
-                model: [["", "Alle"], ["shader", "Shader"], ["particles", "Partikel"], ["video", "Video"], ["gif", "GIF"], ["image", "Bild"]]
-                Chip {
-                    text: modelData[1]
-                    checked: page.typeFilter === modelData[0]
-                    onClicked: page.typeFilter = modelData[0]
-                }
-            }
-            Rectangle { width: 1; height: 30; color: Theme.border }
-            Repeater {
-                model: lwe.allTags.slice(0, 8)
-                Chip {
-                    text: "#" + modelData
-                    checked: page.activeTags.indexOf(modelData) >= 0
-                    onClicked: page.toggleTag(modelData)
                 }
             }
         }

@@ -80,7 +80,7 @@ Item {
             QtObject { id: live; property bool ready: liveLoader.ready; property bool visible: liveLoader.active }
             Rectangle {
                 anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
-                height: parent.height * 0.55
+                height: parent.height * 0.4
                 gradient: Gradient {
                     GradientStop { position: 0; color: "transparent" }
                     GradientStop { position: 1; color: Qt.rgba(0, 0, 0, 0.82) }
@@ -104,25 +104,6 @@ Item {
                 text: tile.wp ? tile.wp.title : ""
                 color: "#ffffff"; elide: Text.ElideRight
                 font.family: Theme.font; font.pixelSize: Theme.fontSize + 1; font.weight: Font.DemiBold
-            }
-            Row {
-                spacing: 6
-                Rectangle {
-                    height: 20; width: typeLbl.implicitWidth + 14; radius: 10
-                    color: Theme.alpha(Theme.accent, 0.35)
-                    border.width: 1; border.color: Theme.alpha(Theme.accent2, 0.5)
-                    Text {
-                        id: typeLbl
-                        anchors.centerIn: parent
-                        text: ({ shader: "Shader", video: "Video", gif: "GIF", image: "Bild", particles: "Partikel" })[tile.wp ? tile.wp.type : ""] || ""
-                        color: "#ffffff"; font.family: Theme.font; font.pixelSize: 11; font.weight: Font.DemiBold
-                    }
-                }
-                Text {
-                    text: tile.wp ? tile.wp.tags.slice(0, 3).join(" · ") : ""
-                    color: Qt.rgba(1, 1, 1, 0.7); font.family: Theme.font; font.pixelSize: 11
-                    anchors.verticalCenter: parent.verticalCenter
-                }
             }
         }
         IconButton {

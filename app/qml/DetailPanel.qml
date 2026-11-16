@@ -114,12 +114,6 @@ Glass {
                     highlightWallpaper: panel.wid
                     onScreenClicked: (name) => lwe.apply(panel.wid, name)
                 }
-                Text {
-                    visible: lwe.screens.length > 1
-                    width: parent.width
-                    text: "Tipp: Klicke auf einen Monitor, um nur ihn zu ändern."
-                    color: Theme.textDim; font.family: Theme.font; font.pixelSize: Theme.fontSize - 2
-                }
             }
 
             // adjust
