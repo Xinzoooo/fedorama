@@ -5,13 +5,13 @@ Column {
     spacing: 10
     width: 380
     function push(msg, kind) {
-        for (var i = 0; i < model.count; i++) if (model.get(i).msg === msg) return
-        while (model.count >= 3) model.remove(0)
-        model.append({ msg: msg, kind: kind })
+        for (var i = 0; i < toastModel.count; i++) if (toastModel.get(i).msg === msg) return
+        while (toastModel.count >= 3) toastModel.remove(0)
+        toastModel.append({ msg: msg, kind: kind })
     }
-    ListModel { id: model }
+    ListModel { id: toastModel }
     Repeater {
-        model: model
+        model: toastModel
         Glass {
             id: t
             width: toasts.width
@@ -31,8 +31,8 @@ Column {
                 text: msg; wrapMode: Text.WordWrap
                 color: Theme.text; font.family: Theme.font; font.pixelSize: Theme.fontSize
             }
-            Timer { running: true; interval: kind === "error" ? 6000 : 3200; onTriggered: model.remove(index) }
-            MouseArea { anchors.fill: parent; onClicked: model.remove(index) }
+            Timer { running: true; interval: kind === "error" ? 6000 : 3200; onTriggered: toastModel.remove(index) }
+            MouseArea { anchors.fill: parent; onClicked: toastModel.remove(index) }
         }
     }
 }
