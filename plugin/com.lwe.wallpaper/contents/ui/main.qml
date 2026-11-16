@@ -51,7 +51,7 @@ WallpaperItem {
         id: taskObjects
         model: (configuration.PauseOnFullscreen !== false || configuration.PauseOnMaximized === true) ? tasks : null
         delegate: QtObject {
-            readonly property rect geo: model.Geometry
+            readonly property rect geo: model.Geometry || Qt.rect(0, 0, 0, 0)
             readonly property bool fullscreen: model.IsFullScreen === true
             readonly property bool maximized: model.IsMaximized === true
             readonly property bool minimized: model.IsMinimized === true

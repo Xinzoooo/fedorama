@@ -66,7 +66,7 @@ def handle(engine, msg: dict, show_window=None, quit_app=None) -> dict:
     elif c == "next":
         engine.next(msg.get("screen", ""))
     elif c == "set":
-        return {"ok": engine.apply_to(msg["id"], msg.get("screen", ""))}
+        return {"ok": engine.apply(msg["id"], msg.get("screen", ""))}
     elif c == "import":
         n = engine.importUrls(msg["paths"])
         return {"ok": n > 0, "imported": n}

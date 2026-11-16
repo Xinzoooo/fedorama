@@ -131,8 +131,17 @@ Item {
             onClicked: page.openDetail(modelData.id)
             onFavoriteClicked: lwe.toggleFavorite(modelData.id)
         }
-        add: Transition { NumberAnimation { properties: "opacity"; from: 0; to: 1; duration: Theme.anim } }
-        displaced: Transition { NumberAnimation { properties: "x,y"; duration: Theme.anim; easing.type: Easing.OutCubic } }
+        // the model is rebuilt on every library change: keep the scroll position
+        property real keepY: 0
+        property bool restoring: false
+        onContentYChanged: if (!restoring) keepY = contentY
+        onModelChanged: {
+            restoring = true
+            Qt.callLater(function() {
+                grid.contentY = Math.max(0, Math.min(grid.keepY, grid.contentHeight - grid.height))
+                grid.restoring = false
+            })
+        }
 
         Column {
             anchors.centerIn: parent

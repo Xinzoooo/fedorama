@@ -4,7 +4,11 @@ Column {
     id: toasts
     spacing: 10
     width: 380
-    function push(msg, kind) { model.append({ msg: msg, kind: kind }) }
+    function push(msg, kind) {
+        for (var i = 0; i < model.count; i++) if (model.get(i).msg === msg) return
+        while (model.count >= 3) model.remove(0)
+        model.append({ msg: msg, kind: kind })
+    }
     ListModel { id: model }
     Repeater {
         model: model

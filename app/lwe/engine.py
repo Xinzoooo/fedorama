@@ -344,6 +344,8 @@ class Engine(QObject):
 
     @Slot(str, str, result=bool)
     def apply(self, wid, screen):
+        if self.paused:                     # choosing a wallpaper means: play it
+            self.setPaused(False)
         ok = self.apply_to(wid, screen)
         if ok:
             w = self.lib.get(wid)
