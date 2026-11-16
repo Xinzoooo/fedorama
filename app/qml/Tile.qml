@@ -30,7 +30,7 @@ Item {
     Item {
         id: card
         anchors.fill: parent
-        anchors.margins: 5
+        anchors.margins: 4
         property real radius: Theme.radius
         scale: tile.hovered ? 1.015 : 1
         Behavior on scale { NumberAnimation { duration: Theme.anim; easing.type: Easing.OutCubic } }
@@ -52,7 +52,7 @@ Item {
                 source: tile.wp && tile.wp.thumb ? "file://" + tile.wp.thumb : ""
                 fillMode: Image.PreserveAspectCrop
                 asynchronous: true
-                sourceSize.width: 560
+                sourceSize.width: 360
                 opacity: live.ready && live.visible ? 0 : 1
                 Behavior on opacity { NumberAnimation { duration: 300 } }
             }
@@ -80,7 +80,7 @@ Item {
             QtObject { id: live; property bool ready: liveLoader.ready; property bool visible: liveLoader.active }
             Rectangle {
                 anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
-                height: parent.height * 0.4
+                height: parent.height * 0.5
                 gradient: Gradient {
                     GradientStop { position: 0; color: "transparent" }
                     GradientStop { position: 1; color: Qt.rgba(0, 0, 0, 0.82) }
@@ -97,18 +97,18 @@ Item {
         }
 
         Column {
-            anchors { left: parent.left; right: parent.right; bottom: parent.bottom; margins: 10 }
+            anchors { left: parent.left; right: parent.right; bottom: parent.bottom; margins: 7 }
             spacing: 4
             Text {
                 width: parent.width
                 text: tile.wp ? tile.wp.title : ""
                 color: "#ffffff"; elide: Text.ElideRight
-                font.family: Theme.font; font.pixelSize: Theme.fontSize; font.weight: Font.Medium
+                font.family: Theme.font; font.pixelSize: Theme.fontSize - 1; font.weight: Font.Medium
             }
         }
         IconButton {
-            anchors { right: parent.right; top: parent.top; margins: 8 }
-            size: 28
+            anchors { right: parent.right; top: parent.top; margins: 4 }
+            size: 22
             icon: tile.wp && tile.wp.favorite ? "heart-filled" : "heart"
             active: tile.wp && tile.wp.favorite
             tint: Theme.accent3

@@ -5,8 +5,8 @@ import QtQuick.Layouts
 
 ApplicationWindow {
     id: win
-    width: 1440; height: 900
-    minimumWidth: 1060; minimumHeight: 680
+    width: 1180; height: 740
+    minimumWidth: 820; minimumHeight: 540
     visible: true
     title: "Linux Wallpaper Engine"
     color: Theme.bg

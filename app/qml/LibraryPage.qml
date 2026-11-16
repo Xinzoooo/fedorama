@@ -69,7 +69,7 @@ Item {
         anchors { left: parent.left; right: parent.right; top: header.bottom; bottom: parent.bottom; topMargin: 14 }
         anchors.leftMargin: -8; anchors.rightMargin: -8
         clip: true
-        readonly property int cols: Math.max(1, Math.floor(width / Theme.tileWidth))
+        readonly property int cols: Math.max(1, Math.round(width / Theme.tileWidth))
         cellWidth: Math.floor(width / cols)
         cellHeight: Math.round(cellWidth * 9 / 16) + 4
         model: lwe.library
