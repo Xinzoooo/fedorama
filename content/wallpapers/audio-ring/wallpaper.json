@@ -1,0 +1,14 @@
+{
+  "id": "audio-ring",
+  "title": "Audio-Ring",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Kreisförmiger Musik-Visualizer.",
+  "tags": [
+    "audio",
+    "neon",
+    "visualizer"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

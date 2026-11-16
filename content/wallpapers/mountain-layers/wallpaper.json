@@ -1,0 +1,15 @@
+{
+  "id": "mountain-layers",
+  "title": "Bergdämmerung",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Gestaffelte Bergketten in der Dämmerung mit Parallaxe.",
+  "tags": [
+    "natur",
+    "warm",
+    "ruhig",
+    "tag"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

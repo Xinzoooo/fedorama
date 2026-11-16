@@ -1,0 +1,18 @@
+{
+  "id": "rain-window",
+  "title": "Regen am Fenster",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Regentropfen auf der Scheibe vor nächtlichen Stadtlichtern.",
+  "tags": [
+    "regen",
+    "stadt",
+    "nacht",
+    "ruhig"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT",
+  "defaults": {
+    "renderScale": 0.8
+  }
+}

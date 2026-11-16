@@ -1,0 +1,14 @@
+{
+  "id": "caustics",
+  "title": "Unterwasser",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Lichtnetz und Sonnenstrahlen unter Wasser.",
+  "tags": [
+    "wasser",
+    "ruhig",
+    "blau"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

@@ -1,0 +1,43 @@
+{
+  "id": "fireflies",
+  "title": "Glühwürmchen",
+  "type": "particles",
+  "description": "Sanft schwebende Lichtpunkte im Sommerwald. Weichen der Maus aus.",
+  "tags": [
+    "natur",
+    "nacht",
+    "ruhig",
+    "partikel"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT",
+  "preset": {
+    "background": [
+      "#04130f",
+      "#0b2a24"
+    ],
+    "sprite": "glow",
+    "color": "#d8ff7a",
+    "colorVariation": 0.12,
+    "emitter": "area",
+    "emitRate": 18,
+    "lifeSpan": 9000,
+    "lifeSpanVariation": 3000,
+    "size": 18,
+    "sizeVariation": 10,
+    "alpha": 0.9,
+    "alphaVariation": 0.5,
+    "angle": 270,
+    "angleVariation": 180,
+    "velocity": 8,
+    "velocityVariation": 8,
+    "wander": 30,
+    "wanderPace": 40,
+    "mouse": "repel",
+    "mouseForce": 80,
+    "prefill": 120,
+    "maxParticles": 400,
+    "cursorGlow": true,
+    "audioReact": 0.6
+  }
+}

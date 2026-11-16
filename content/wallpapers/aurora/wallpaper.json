@@ -1,0 +1,17 @@
+{
+  "id": "aurora",
+  "title": "Nordlicht",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Polarlichter über einem stillen Bergsee.",
+  "tags": [
+    "natur",
+    "nacht",
+    "ruhig"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT",
+  "defaults": {
+    "renderScale": 0.75
+  }
+}

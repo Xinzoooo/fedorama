@@ -1,0 +1,14 @@
+{
+  "id": "bokeh-lights",
+  "title": "Bokeh-Lichter",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Schwebende, unscharfe Lichtkreise.",
+  "tags": [
+    "ruhig",
+    "abstrakt",
+    "bunt"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "plasma-flow",
+  "title": "Plasma-Fluss",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Weich fließende Farben.",
+  "tags": [
+    "abstrakt",
+    "bunt",
+    "ruhig"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

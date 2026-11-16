@@ -1,0 +1,13 @@
+{
+  "id": "crystal",
+  "title": "Kristall",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Leuchtende Kristallzellen, Licht folgt der Maus.",
+  "tags": [
+    "abstrakt",
+    "bunt"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "circuit",
+  "title": "Platine",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Leiterbahnen mit wandernden Lichtimpulsen.",
+  "tags": [
+    "tech",
+    "neon",
+    "dunkel"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

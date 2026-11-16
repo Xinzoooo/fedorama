@@ -1,0 +1,15 @@
+{
+  "id": "matrix-rain",
+  "title": "Matrix-Regen",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Fallende grüne Zeichenkolonnen.",
+  "tags": [
+    "retro",
+    "code",
+    "grün",
+    "dunkel"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

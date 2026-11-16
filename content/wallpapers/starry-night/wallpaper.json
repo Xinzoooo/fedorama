@@ -1,0 +1,15 @@
+{
+  "id": "starry-night",
+  "title": "Sternenhimmel",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Funkelnde Sterne, Milchstraße und Sternschnuppen über Hügeln.",
+  "tags": [
+    "natur",
+    "nacht",
+    "ruhig",
+    "weltraum"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

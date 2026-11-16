@@ -1,0 +1,14 @@
+{
+  "id": "embers",
+  "title": "Glut & Funken",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Aufsteigende Funken über Glut.",
+  "tags": [
+    "warm",
+    "feuer",
+    "dunkel"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "ocean-sunset",
+  "title": "Ozean bei Sonnenuntergang",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Glitzerndes Meer im Abendlicht.",
+  "tags": [
+    "natur",
+    "wasser",
+    "warm"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT",
+  "defaults": {
+    "renderScale": 0.85
+  }
+}

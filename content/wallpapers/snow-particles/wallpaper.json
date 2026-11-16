@@ -1,0 +1,41 @@
+{
+  "id": "snow-particles",
+  "title": "Schneegestöber",
+  "type": "particles",
+  "description": "Echte Partikel-Schneeflocken, die vom Mauszeiger verweht werden.",
+  "tags": [
+    "winter",
+    "natur",
+    "partikel"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT",
+  "preset": {
+    "background": [
+      "#1b2440",
+      "#05070f"
+    ],
+    "sprite": "dot",
+    "color": "#ffffff",
+    "colorVariation": 0.0,
+    "emitter": "top",
+    "emitRate": 70,
+    "lifeSpan": 16000,
+    "lifeSpanVariation": 3000,
+    "size": 7,
+    "sizeVariation": 6,
+    "alpha": 0.85,
+    "alphaVariation": 0.4,
+    "angle": 90,
+    "angleVariation": 20,
+    "velocity": 55,
+    "velocityVariation": 25,
+    "wind": 4,
+    "wander": 25,
+    "wanderPace": 30,
+    "mouse": "repel",
+    "mouseForce": 120,
+    "prefill": 600,
+    "maxParticles": 1400
+  }
+}

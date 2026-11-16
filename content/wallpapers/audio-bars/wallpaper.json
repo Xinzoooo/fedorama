@@ -1,0 +1,14 @@
+{
+  "id": "audio-bars",
+  "title": "Audio-Balken",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Spektrum-Balken mit Spiegelung.",
+  "tags": [
+    "audio",
+    "neon",
+    "visualizer"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

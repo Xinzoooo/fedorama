@@ -1,0 +1,43 @@
+{
+  "id": "rising-sparks",
+  "title": "Funkenflug",
+  "type": "particles",
+  "description": "Aufsteigende Funken, die zur Musik stärker sprühen.",
+  "tags": [
+    "warm",
+    "feuer",
+    "partikel",
+    "audio"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT",
+  "preset": {
+    "background": [
+      "#0a0402",
+      "#2a0c03"
+    ],
+    "sprite": "glow",
+    "color": "#ff8a2a",
+    "colorVariation": 0.15,
+    "emitter": "bottom",
+    "emitRate": 60,
+    "lifeSpan": 6000,
+    "lifeSpanVariation": 2000,
+    "size": 10,
+    "sizeVariation": 6,
+    "endSize": 2,
+    "alpha": 0.9,
+    "angle": 270,
+    "angleVariation": 15,
+    "velocity": 110,
+    "velocityVariation": 50,
+    "gravity": -6,
+    "wander": 40,
+    "wanderPace": 90,
+    "mouse": "attract",
+    "mouseForce": 50,
+    "prefill": 200,
+    "maxParticles": 700,
+    "audioReact": 1.0
+  }
+}

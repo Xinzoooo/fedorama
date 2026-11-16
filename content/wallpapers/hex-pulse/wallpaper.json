@@ -1,0 +1,15 @@
+{
+  "id": "hex-pulse",
+  "title": "Hexagon-Puls",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Wabengitter mit Lichtwellen – folgt Maus und Musik.",
+  "tags": [
+    "neon",
+    "abstrakt",
+    "audio",
+    "tech"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "soft-gradient",
+  "title": "Sanfter Verlauf",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Ruhiger Farbverlauf, sehr sparsam (ideal für Laptops).",
+  "tags": [
+    "ruhig",
+    "minimal",
+    "sparsam"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT",
+  "defaults": {
+    "renderScale": 0.5
+  }
+}

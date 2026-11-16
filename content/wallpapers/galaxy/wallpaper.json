@@ -1,0 +1,16 @@
+{
+  "id": "galaxy",
+  "title": "Galaxie",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Rotierende Spiralgalaxie im Sternenfeld.",
+  "tags": [
+    "weltraum",
+    "nacht"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT",
+  "defaults": {
+    "renderScale": 0.85
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "neon-city",
+  "title": "Neon-Stadt",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Skyline mit Leuchtreklamen, Fenstern und Verkehr.",
+  "tags": [
+    "stadt",
+    "neon",
+    "nacht"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

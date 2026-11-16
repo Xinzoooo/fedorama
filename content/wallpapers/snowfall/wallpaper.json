@@ -1,0 +1,15 @@
+{
+  "id": "snowfall",
+  "title": "Schneenacht",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Schneefall über verschneiten Hügeln.",
+  "tags": [
+    "natur",
+    "winter",
+    "nacht",
+    "ruhig"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

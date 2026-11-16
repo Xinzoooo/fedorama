@@ -1,0 +1,14 @@
+{
+  "id": "synthwave",
+  "title": "Synthwave-Grid",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Retro-Sonne, Neon-Gitter und Berge – reagiert auf Bass.",
+  "tags": [
+    "retro",
+    "neon",
+    "audio"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

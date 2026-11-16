@@ -1,0 +1,14 @@
+{
+  "id": "warp-speed",
+  "title": "Warp",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Sternenflug mit Lichtgeschwindigkeit.",
+  "tags": [
+    "weltraum",
+    "abstrakt",
+    "audio"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

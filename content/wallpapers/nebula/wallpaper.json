@@ -1,0 +1,16 @@
+{
+  "id": "nebula",
+  "title": "Nebel",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Farbiger kosmischer Gasnebel.",
+  "tags": [
+    "weltraum",
+    "bunt"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT",
+  "defaults": {
+    "renderScale": 0.7
+  }
+}

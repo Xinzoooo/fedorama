@@ -1,0 +1,41 @@
+{
+  "id": "stardust",
+  "title": "Sternenstaub",
+  "type": "particles",
+  "description": "Bunte Teilchen, die vom Mauszeiger angezogen werden.",
+  "tags": [
+    "weltraum",
+    "bunt",
+    "partikel"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT",
+  "preset": {
+    "background": [
+      "#06031a",
+      "#12052b"
+    ],
+    "sprite": "glow",
+    "color": "#8fb8ff",
+    "colorVariation": 0.6,
+    "emitter": "area",
+    "emitRate": 45,
+    "lifeSpan": 7000,
+    "lifeSpanVariation": 2500,
+    "size": 9,
+    "sizeVariation": 7,
+    "alpha": 0.8,
+    "alphaVariation": 0.4,
+    "angle": 0,
+    "angleVariation": 180,
+    "velocity": 12,
+    "velocityVariation": 10,
+    "wander": 15,
+    "mouse": "attract",
+    "mouseForce": 90,
+    "prefill": 300,
+    "maxParticles": 900,
+    "cursorGlow": true,
+    "audioReact": 0.8
+  }
+}

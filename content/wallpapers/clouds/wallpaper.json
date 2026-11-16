@@ -1,0 +1,18 @@
+{
+  "id": "clouds",
+  "title": "Wolkenhimmel",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Ziehende Wolken am blauen Himmel.",
+  "tags": [
+    "natur",
+    "hell",
+    "ruhig",
+    "tag"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT",
+  "defaults": {
+    "renderScale": 0.75
+  }
+}

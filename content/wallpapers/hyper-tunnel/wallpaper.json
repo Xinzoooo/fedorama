@@ -1,0 +1,14 @@
+{
+  "id": "hyper-tunnel",
+  "title": "Hyper-Tunnel",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Neon-Tunnelflug – schneller mit Bass.",
+  "tags": [
+    "neon",
+    "abstrakt",
+    "audio"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}

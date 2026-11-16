@@ -1,0 +1,14 @@
+{
+  "id": "lava-lamp",
+  "title": "Lava",
+  "type": "shader",
+  "file": "shader.frag",
+  "description": "Glühende Lava-Blasen, eine folgt der Maus.",
+  "tags": [
+    "warm",
+    "abstrakt",
+    "retro"
+  ],
+  "author": "Linux Wallpaper Engine",
+  "license": "MIT"
+}
