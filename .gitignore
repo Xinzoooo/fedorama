@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 *.qsb
 /build/
+content/wallpapers/*/thumb.jpg

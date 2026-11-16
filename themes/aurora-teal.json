@@ -1,0 +1,13 @@
+{
+  "name": "Aurora Teal",
+  "description": "Kühles Nordlicht-Grün/Türkis",
+  "colors": {
+    "bg": "#03100f", "bg2": "#06201f", "glass": "#e8fffb", "border": "#bffff2",
+    "text": "#eafffb", "textDim": "#8fb9b2", "accent": "#18e0a8", "accent2": "#4fb7ff",
+    "accent3": "#b48cff", "danger": "#ff6b7d", "ok": "#5dffb5", "shadow": "#000000"
+  },
+  "glassOpacity": 0.06, "glassOpacityHover": 0.11, "borderOpacity": 0.14,
+  "backdropBlur": 64, "backdropDim": 0.6, "glow": 0.8,
+  "radius": 20, "radiusSmall": 12, "fontFamily": "Inter", "fontFallback": "Noto Sans",
+  "fontSize": 14, "animationMs": 240, "tileWidth": 290
+}

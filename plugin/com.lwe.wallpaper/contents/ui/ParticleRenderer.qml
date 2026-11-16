@@ -77,7 +77,21 @@ Item {
             x: r.p("wind", 0) * r.speedMul
             y: r.p("gravity", 0) * r.speedMul
         }
-        Component.onCompleted: burst(Math.min(maximumEmitted, r.p("prefill", 0)))
+    }
+
+    // fills the whole screen once at start, so the wallpaper does not begin empty
+    Emitter {
+        system: sys
+        anchors.fill: parent
+        emitRate: 0
+        lifeSpan: emitter.lifeSpan
+        lifeSpanVariation: emitter.lifeSpanVariation
+        size: emitter.size
+        sizeVariation: emitter.sizeVariation
+        endSize: emitter.endSize
+        velocity: emitter.velocity
+        acceleration: emitter.acceleration
+        Component.onCompleted: burst(Math.min(emitter.maximumEmitted, r.p("prefill", 0)))
     }
 
     Wander {

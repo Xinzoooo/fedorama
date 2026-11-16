@@ -43,19 +43,19 @@ Item {
             id: loader
             anchors.fill: parent
             asynchronous: false
-            source: {
-                switch (slot.kind) {
-                case "shader": return "ShaderRenderer.qml"
-                case "video": return "VideoRenderer.qml"
-                case "gif": return "GifRenderer.qml"
-                case "image": return "ImageRenderer.qml"
-                case "particles": return "ParticleRenderer.qml"
-                default: return ""
-                }
-            }
-            onLoaded: item.slot = slot
         }
     }
+    // The renderer gets `slot` as an initial property, so e.g. a ShaderEffect never
+    // starts with an empty fragmentShader (which leaves it in an error state).
+    function reload() {
+        var file = ({ shader: "ShaderRenderer.qml", video: "VideoRenderer.qml", gif: "GifRenderer.qml",
+                      image: "ImageRenderer.qml", particles: "ParticleRenderer.qml" })[kind] || ""
+        loader.source = ""
+        if (file !== "" && source !== "" || kind === "particles") loader.setSource(file, { slot: slot })
+    }
+    onKindChanged: reload()
+    onSourceChanged: if (kind !== "particles") reload()
+
     Text {
         visible: loader.item && loader.item.errorString ? true : false
         text: loader.item ? ("Linux Wallpaper Engine: " + loader.item.errorString) : ""
