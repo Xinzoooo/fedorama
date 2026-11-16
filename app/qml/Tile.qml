@@ -20,6 +20,7 @@ Item {
     MultiEffect {
         anchors.fill: card
         source: glowSrc
+        visible: Theme.glow > 0
         blurEnabled: true; blur: 1; blurMax: 40
         scale: card.scale
         opacity: (tile.hovered || tile.selected) ? 0.7 * Theme.glow : 0

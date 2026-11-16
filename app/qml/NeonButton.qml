@@ -25,7 +25,7 @@ Item {
     MultiEffect {
         anchors.fill: bg
         source: glowSrc
-        visible: b.primary || b.checked
+        visible: (b.primary || b.checked) && Theme.glow > 0
         blurEnabled: true; blur: 1.0; blurMax: 32
         opacity: (ma.containsMouse ? 0.75 : 0.45) * Theme.glow
         Behavior on opacity { NumberAnimation { duration: Theme.anim } }

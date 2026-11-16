@@ -76,7 +76,8 @@ ok "$(ls "$LWE/builtin" | wc -l) Wallpaper bereit"
 step "Plasma-Wallpaper-Plugin"
 WAS_INSTALLED=0
 if kpackagetool6 -t Plasma/Wallpaper -l 2>/dev/null | grep -qx "com.lwe.wallpaper"; then
-    WAS_INSTALLED=1
+    # only reload plasmashell later if the plugin really changed
+    diff -rq "$SRC/plugin/com.lwe.wallpaper" "$DATA/plasma/wallpapers/com.lwe.wallpaper" >/dev/null 2>&1 || WAS_INSTALLED=1
     kpackagetool6 -t Plasma/Wallpaper -u "$SRC/plugin/com.lwe.wallpaper" >/dev/null
 else
     kpackagetool6 -t Plasma/Wallpaper -i "$SRC/plugin/com.lwe.wallpaper" >/dev/null

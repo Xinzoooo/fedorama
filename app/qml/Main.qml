@@ -31,6 +31,7 @@ ApplicationWindow {
     Item {
         id: backdrop
         anchors.fill: parent
+        visible: Theme.backdrop
         Image {
             id: bgA
             anchors.fill: parent
@@ -74,7 +75,7 @@ ApplicationWindow {
         id: sidebar
         anchors { left: parent.left; top: parent.top; bottom: parent.bottom; margins: 16 }
         width: 236
-        color: Theme.alpha(Theme.bg, 0.45)
+        color: Theme.flat ? Theme.glass : Theme.alpha(Theme.bg, 0.45)
 
         Column {
             anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }

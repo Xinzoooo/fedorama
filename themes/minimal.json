@@ -1,0 +1,30 @@
+{
+  "name": "Minimal",
+  "description": "Flach, ruhig, ohne Glas und Glow",
+  "style": "flat",
+  "backdrop": false,
+  "sheen": false,
+  "colors": {
+    "bg": "#0f0f11",
+    "bg2": "#18181b",
+    "surface": "#161619",
+    "surfaceHover": "#1e1e22",
+    "border": "#26262b",
+    "text": "#ececef",
+    "textDim": "#8a8a93",
+    "accent": "#6c7dff",
+    "accent2": "#6c7dff",
+    "accent3": "#ff6b8b",
+    "danger": "#ff5a6e",
+    "ok": "#4ade80",
+    "shadow": "#000000"
+  },
+  "glow": 0,
+  "radius": 10,
+  "radiusSmall": 8,
+  "fontFamily": "Inter",
+  "fontFallback": "Noto Sans",
+  "fontSize": 14,
+  "animationMs": 160,
+  "tileWidth": 290
+}

@@ -264,7 +264,7 @@ class Engine(QObject):
 
     # ================================================================ theme
     def _load_theme(self):
-        name = self.cfg.data.get("theme", "neon-glass")
+        name = self.cfg.data.get("theme", "minimal")
         for d in (paths.THEMES_USER, paths.themes_builtin()):
             p = d / f"{name}.json"
             if p.exists():
@@ -308,7 +308,7 @@ class Engine(QObject):
     def settings(self):
         g = dict(self.cfg.g)
         g["autostart"] = AUTOSTART.exists()
-        g["theme"] = self.cfg.data.get("theme", "neon-glass")
+        g["theme"] = self.cfg.data.get("theme", "minimal")
         g["audioAvailable"] = AudioAnalyzer.available()
         return g
 

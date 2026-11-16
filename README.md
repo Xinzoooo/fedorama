@@ -84,7 +84,7 @@ lwe config fps 60        lwe config audio true   lwe quit | restore
 
 ## Themes
 
-`themes/*.json` (mitgeliefert: Neon Glass, Aurora Teal, Sunset Amber). Eigene Themes als JSON nach
+`themes/*.json` (mitgeliefert: Minimal (Standard), Neon Glass, Aurora Teal, Sunset Amber). Eigene Themes als JSON nach
 `~/.local/share/lwe/themes/` kopieren und unter Einstellungen → Aussehen wählen.
 
 ## Technik – und warum

@@ -13,6 +13,7 @@ Rectangle {
     Behavior on color { ColorAnimation { duration: Theme.anim } }
     Behavior on border.color { ColorAnimation { duration: Theme.anim } }
     Rectangle {           // top sheen
+        visible: Theme.sheen
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 1 }
         height: Math.min(parent.height * 0.5, 60)
         radius: parent.radius

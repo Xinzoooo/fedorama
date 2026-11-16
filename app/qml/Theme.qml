@@ -17,9 +17,12 @@ QtObject {
     readonly property color accent3: col("accent3", "#ff3fb0")
     readonly property color danger: col("danger", "#ff5a7a")
     readonly property color ok: col("ok", "#3df5a7")
-    readonly property color glass: alpha(col("glass", "#ffffff"), t.glassOpacity !== undefined ? t.glassOpacity : 0.07)
-    readonly property color glassHover: alpha(col("glass", "#ffffff"), t.glassOpacityHover !== undefined ? t.glassOpacityHover : 0.12)
-    readonly property color border: alpha(col("border", "#ffffff"), t.borderOpacity !== undefined ? t.borderOpacity : 0.13)
+    readonly property bool flat: t.style === "flat"
+    readonly property bool backdrop: t.backdrop !== false
+    readonly property bool sheen: t.sheen !== false
+    readonly property color glass: flat ? col("surface", "#161619") : alpha(col("glass", "#ffffff"), t.glassOpacity !== undefined ? t.glassOpacity : 0.07)
+    readonly property color glassHover: flat ? col("surfaceHover", "#1e1e22") : alpha(col("glass", "#ffffff"), t.glassOpacityHover !== undefined ? t.glassOpacityHover : 0.12)
+    readonly property color border: flat ? col("border", "#26262b") : alpha(col("border", "#ffffff"), t.borderOpacity !== undefined ? t.borderOpacity : 0.13)
     readonly property real backdropBlur: t.backdropBlur !== undefined ? t.backdropBlur : 64
     readonly property real backdropDim: t.backdropDim !== undefined ? t.backdropDim : 0.6
     readonly property real glow: t.glow !== undefined ? t.glow : 0.9

@@ -13,7 +13,7 @@ Glass {
     readonly property var pr: wp ? wp.params : ({})
     function pv(k, fb) { return pr[k] === undefined ? fb : pr[k] }
     signal closeRequested()
-    color: Theme.alpha(Theme.bg, 0.72)
+    color: Theme.flat ? Theme.glass : Theme.alpha(Theme.bg, 0.72)
     radius: Theme.radius
 
     Flickable {

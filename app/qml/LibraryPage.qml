@@ -101,7 +101,7 @@ Item {
             }
             Rectangle { width: 1; height: 30; color: Theme.border }
             Repeater {
-                model: lwe.allTags.slice(0, 10)
+                model: lwe.allTags.slice(0, 8)
                 Chip {
                     text: "#" + modelData
                     checked: page.activeTags.indexOf(modelData) >= 0
