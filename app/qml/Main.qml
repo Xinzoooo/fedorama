@@ -146,6 +146,16 @@ ApplicationWindow {
             }
         }
 
+        Bar {
+            id: bar
+            anchors { left: parent.left; right: parent.right; bottom: parent.bottom; margins: 14 }
+            z: 5
+            opacity: win.idle ? 0 : 1
+            visible: opacity > 0
+            Behavior on opacity { NumberAnimation { duration: 350; easing.type: Easing.OutCubic } }
+            transform: Translate { y: win.idle ? 10 : 0; Behavior on y { NumberAnimation { duration: 350; easing.type: Easing.OutCubic } } }
+        }
+
         // window buttons: only while the mouse is over the window
         Row {
             anchors { top: parent.top; right: parent.right; margins: 12 }
