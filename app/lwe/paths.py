@@ -6,17 +6,9 @@ DATA = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share")) / "lw
 APP_DIR = Path(__file__).resolve().parent.parent          # .../app
 BUILTIN = DATA / "builtin"                                 # shipped wallpapers (compiled at install)
 LIBRARY = DATA / "library"                                 # user imports
-THEMES_USER = DATA / "themes"
 CONFIG = DATA / "config.json"
 LOG = DATA / "lwe.log"
 PLUGIN_UI = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share")) / "plasma/wallpapers/com.lwe.wallpaper/contents/ui"
-
-
-def themes_builtin() -> Path:
-    for p in (DATA / "app/themes", APP_DIR.parent / "themes", APP_DIR / "themes"):
-        if p.is_dir():
-            return p
-    return DATA / "app/themes"
 
 
 def builtin_dirs() -> list[Path]:
@@ -38,5 +30,5 @@ def plugin_ui() -> Path:
 
 
 def ensure():
-    for p in (DATA, LIBRARY, THEMES_USER):
+    for p in (DATA, LIBRARY):
         p.mkdir(parents=True, exist_ok=True)

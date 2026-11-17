@@ -52,9 +52,9 @@ if [ -x "$BIN/lwe" ]; then "$BIN/lwe" quit >/dev/null 2>&1 || true; fi
 
 # ------------------------------------------------------------------ files
 step "Kopiere Programm nach $LWE"
-mkdir -p "$LWE/app" "$LWE/builtin" "$LWE/library" "$LWE/themes" "$BIN"
-rm -rf "$LWE/app/app" "$LWE/app/themes"
-cp -r "$SRC/app" "$SRC/themes" "$LWE/app/"
+mkdir -p "$LWE/app" "$LWE/builtin" "$LWE/library" "$BIN"
+rm -rf "$LWE/app/app" "$LWE/app/themes"   # themes: removed in 2026-11, clean up old installs
+cp -r "$SRC/app" "$LWE/app/"
 find "$LWE/app" -name __pycache__ -type d -prune -exec rm -rf {} +
 ok "App + Themes"
 

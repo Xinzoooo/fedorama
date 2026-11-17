@@ -39,7 +39,6 @@ class Engine(QObject):
     screensChanged = Signal()
     stateChanged = Signal()
     settingsChanged = Signal()
-    themeChanged = Signal()
     toast = Signal(str, str)            # message, kind (info|error|ok)
     showWindowRequested = Signal()
     remoteCommand = Signal(dict)            # from the panel widget (bridge thread -> main thread)
@@ -54,8 +53,6 @@ class Engine(QObject):
         self.bridge = None
         self._plasma_screens: list[dict] = []
         self._last_change: dict[str, float] = {}
-        self._theme = {}
-        self._load_theme()
         self._items = []                       # cached list for QML (lwe.wallpapers)
         self.model = WallpaperModel(self)
         self.proxy = FilterModel(self.model)
@@ -378,20 +375,6 @@ class Engine(QObject):
         elif AUTOSTART.exists():
             AUTOSTART.unlink()
 
-    # ================================================================ theme
-    def _load_theme(self):
-        name = self.cfg.data.get("theme", "minimal")
-        for d in (paths.THEMES_USER, paths.themes_builtin()):
-            p = d / f"{name}.json"
-            if p.exists():
-                try:
-                    self._theme = json.loads(p.read_text(encoding="utf-8"))
-                    return
-                except ValueError as e:
-                    self.toast.emit(f"Theme {p.name} fehlerhaft: {e}", "error")
-        p = paths.themes_builtin() / "neon-glass.json"
-        self._theme = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
-
     # ================================================================ QML API
     def wallpaper_dict(self, wid: str) -> dict:
         w = self.lib.get(wid)
@@ -448,39 +431,12 @@ class Engine(QObject):
     def settings(self):
         g = dict(self.cfg.g)
         g["autostart"] = AUTOSTART.exists()
-        g["theme"] = self.cfg.data.get("theme", "minimal")
         g["audioAvailable"] = AudioAnalyzer.available()
         return g
-
-    @Property("QVariantMap", notify=themeChanged)
-    def theme(self):
-        return self._theme
-
-    @Property("QVariantList", notify=themeChanged)
-    def themes(self):
-        names = set()
-        for d in (paths.themes_builtin(), paths.THEMES_USER):
-            if d.is_dir():
-                names |= {p.stem for p in d.glob("*.json")}
-        out = []
-        for n in sorted(names):
-            for d in (paths.THEMES_USER, paths.themes_builtin()):
-                p = d / f"{n}.json"
-                if p.exists():
-                    try:
-                        out.append({"id": n, "name": json.loads(p.read_text(encoding="utf-8")).get("name", n)})
-                    except ValueError:
-                        pass
-                    break
-        return out
 
     @Property(str, constant=True)
     def pluginUi(self):
         return QUrl.fromLocalFile(str(paths.plugin_ui())).toString()
-
-    @Property(str, constant=True)
-    def themesDir(self):
-        return str(paths.THEMES_USER)
 
     @Slot(str, str, result=bool)
     def apply(self, wid, screen):
@@ -624,10 +580,6 @@ class Engine(QObject):
             self.cfg.g["quality"] = quality.CUSTOM
         if key == "autostart":
             self._autostart(bool(value))
-        elif key == "theme":
-            self.cfg.data["theme"] = str(value)
-            self._load_theme()
-            self.themeChanged.emit()
         elif key in self.cfg.g:
             old = self.cfg.g[key]
             self.cfg.g[key] = type(old)(value) if not isinstance(old, bool) else bool(value)

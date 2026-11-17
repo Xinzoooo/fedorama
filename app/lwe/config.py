@@ -10,7 +10,6 @@ from . import paths
 
 DEFAULTS = {
     "version": 1,
-    "theme": "minimal",
     "paused": False,
     "global": {
         "fps": 30,

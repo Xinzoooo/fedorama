@@ -32,3 +32,8 @@ def test_apply_current_missing_target_falls_back_to_all(eng, plasma_calls, toast
     assert eng.applyCurrent("aurora") is True
     assert sorted(c[1] for c in plasma_calls if c[0] == "apply") == [0, 1, 2]
     assert any("alle" in m.lower() for m, _ in toasts)
+
+
+def test_no_theme_api(eng):
+    assert not hasattr(eng, "themes")
+    assert "theme" not in eng.settings
