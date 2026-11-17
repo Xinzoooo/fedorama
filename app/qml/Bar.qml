@@ -38,17 +38,21 @@ Rectangle {
 
     // ---------------------------------------------------- centre: ‹ name ›
     Row {
-        // centred in the bar when there is room, otherwise in the gap between the side groups
+        id: centre
+        // centred in the bar when the name gets at least 160 px that way, otherwise in the gap between the side groups
         readonly property real gapLeft: leftGroup.x + leftGroup.width + 12
         readonly property real gapRight: rightGroup.x - 12
-        x: Math.max(gapLeft, Math.min((bar.width - width) / 2, gapRight - width))
+        readonly property real centredRoom: 2 * Math.min(bar.width / 2 - gapLeft, gapRight - bar.width / 2) - 2 * (40 + 14)
+        readonly property bool centred: centredRoom >= 160
+        x: centred ? (bar.width - width) / 2 : Math.max(gapLeft, Math.min((bar.width - width) / 2, gapRight - width))
         anchors.verticalCenter: parent.verticalCenter
         spacing: 14
         BarButton { objectName: "prevButton"; icon: "prev"; tip: "Zurück (←)"; anchors.verticalCenter: parent.verticalCenter; onClicked: win.step(-1) }
         Item {
             id: title
-            // whatever the gap between the side groups leaves for the name (arrows take 2 × (40 + 14))
-            width: Math.max(80, Math.min(300, rightGroup.x - leftGroup.x - leftGroup.width - 24 - 2 * (40 + 14)))
+            // arrows take 2 × (40 + 14)
+            width: centre.centred ? Math.min(300, centre.centredRoom)
+                                  : Math.max(80, Math.min(300, centre.gapRight - centre.gapLeft - 2 * (40 + 14)))
             height: 44
             anchors.verticalCenter: parent.verticalCenter
             clip: true
@@ -117,7 +121,9 @@ Rectangle {
             signal clicked()
             onClicked: win.applyCurrent()
             anchors.verticalCenter: parent.verticalCenter
-            width: applyRow.implicitWidth + 40; height: 44
+            // fixed to the "Anwenden" width, so "Läuft" does not shift the bar
+            width: applyMetrics.width + 18 + 10 + 40; height: 44
+            TextMetrics { id: applyMetrics; text: "Anwenden"; font { family: Theme.font; pixelSize: 14; weight: Font.DemiBold } }
             radius: 12
             color: win.justApplied ? Theme.ok : Theme.text
             Behavior on color { ColorAnimation { duration: Theme.anim } }

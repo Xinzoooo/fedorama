@@ -76,7 +76,8 @@ ApplicationWindow {
 
     // ------------------------------------------------------------ floating frame
     // no border: the stage is the window; a static 9-slice shadow fills the transparent margin
-    readonly property int shadowMargin: 28
+    // no margin (and no shadow) when the window fills the screen
+    readonly property int shadowMargin: visibility === Window.Maximized || visibility === Window.FullScreen ? 0 : 28
     Item {
     id: frame                                        // shadow + stage (one item, so it can be grabbed whole)
     anchors.fill: parent

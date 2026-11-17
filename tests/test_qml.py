@@ -260,3 +260,35 @@ def test_start_uses_first_screen_with_our_plugin(qml_load, eng, monkeypatch):
         {"name": "HDMI-A-1", "index": 1, "active": True, "wallpaper": "aurora", "playlist": {}}])
     root, _ = qml_load("Main.qml")
     assert root.property("current")["id"] == "aurora"
+
+
+def test_bar_centre_steady_and_centred(qml_load, qapp):
+    from PySide6.QtCore import QPointF
+    from PySide6.QtTest import QTest
+    root, w = qml_load("Main.qml", running="synthwave")
+    _settle(qapp, 5)
+    prev, nxt = _child(root, "prevButton"), _child(root, "nextButton")
+    left = prev.mapToScene(QPointF(0, 0)).x()
+    right = nxt.mapToScene(QPointF(nxt.width(), 0)).x()
+    assert abs((left + right) / 2 - root.width() / 2) <= 0.5      # centred in the default window
+    root.setProperty("justApplied", True); QTest.qWait(150)
+    assert prev.mapToScene(QPointF(0, 0)).x() == left             # "Läuft" does not move the centre
+    assert w == []
+
+
+def test_maximized_window_has_no_margin(qml_load, qapp):
+    from PySide6.QtTest import QTest
+    root, w = qml_load("Main.qml")
+    root.showMaximized(); QTest.qWait(150)
+    assert root.property("shadowMargin") == 0
+    root.showNormal(); QTest.qWait(150)
+    assert root.property("shadowMargin") == 28
+
+
+def test_shadow_png_has_no_hard_edges():
+    import pathlib
+    from PIL import Image
+    im = Image.open(pathlib.Path(__file__).resolve().parent.parent / "app/qml/images/shadow.png").getchannel("A")
+    w, h = im.size
+    assert max(im.getpixel((x, h - 1)) for x in range(w)) == 0      # nothing cut off at the bottom
+    assert max(im.getpixel((x, 0)) for x in range(w)) == 0
