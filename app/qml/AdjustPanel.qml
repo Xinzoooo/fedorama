@@ -17,6 +17,9 @@ Flickable {
     readonly property int cols: Math.max(1, Math.floor((width + 36) / (260 + 36)))
     readonly property real colW: (width - (cols - 1) * 36) / cols
     function pv(k, fb) { return pr[k] === undefined ? fb : pr[k] }
+    // forms belong to one wallpaper: stepping on closes them, so nothing acts on the next one
+    onWidChanged: closeForms()
+    function closeForms() { renameRow.visible = false; rename.focus = false; removeBtn.confirm = false }
     function pct(v) { return Math.round(v * 100) + " %" }
 
     Column {
@@ -94,8 +97,10 @@ Flickable {
                 spacing: 6
                 visible: !!panel.wp && !panel.wp.builtin
                 TextButton { text: "Ordner"; icon: "folder"; onClicked: lwe.openFolder(panel.wid) }
-                TextButton { text: "Umbenennen"; icon: "edit"; onClicked: { rename.text = panel.wp.title; renameRow.visible = true; rename.forceActiveFocus() } }
+                TextButton { objectName: "renameButton"; text: "Umbenennen"; icon: "edit"; onClicked: { rename.text = panel.wp.title; renameRow.visible = true; rename.forceActiveFocus() } }
                 TextButton {
+                    id: removeBtn
+                    objectName: "removeButton"
                     property bool confirm: false
                     text: confirm ? "Wirklich entfernen?" : "Entfernen"; icon: "trash"; danger: true
                     onClicked: { if (!confirm) { confirm = true; confirmTimer.restart(); return } lwe.removeWallpaper(panel.wid) }
@@ -105,6 +110,7 @@ Flickable {
         }
         Row {
             id: renameRow
+            objectName: "renameRow"
             visible: false
             spacing: 8
             Rectangle {
@@ -112,15 +118,16 @@ Flickable {
                 color: "transparent"; border.color: Qt.rgba(1, 1, 1, 0.33)
                 TextInput {
                     id: rename
+                    objectName: "renameField"
                     anchors { fill: parent; leftMargin: 12; rightMargin: 12 }
                     verticalAlignment: TextInput.AlignVCenter
                     color: Theme.text; font { family: Theme.font; pixelSize: Theme.fontSize }
                     onAccepted: save.clicked()
-                    Keys.onEscapePressed: renameRow.visible = false
+                    Keys.onEscapePressed: panel.closeForms()
                 }
             }
-            TextButton { id: save; text: "Speichern"; icon: "check"
-                         onClicked: { lwe.renameWallpaper(panel.wid, rename.text, panel.wp.tags.join(",")); renameRow.visible = false } }
+            TextButton { id: save; objectName: "saveRename"; text: "Speichern"; icon: "check"
+                         onClicked: { lwe.renameWallpaper(panel.wid, rename.text, panel.wp.tags.join(",")); panel.closeForms() } }
         }
     }
 }

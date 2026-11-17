@@ -140,3 +140,59 @@ def test_import_without_thumbnail_renders(qml_load, eng, qapp, tmp_path):
     root.setProperty("currentId", new["id"]); root.setProperty("panel", "all"); _settle(qapp, 5)
     assert root.property("current")["id"] == new["id"]
     assert w == []
+
+
+def _import_two(eng, tmp_path):
+    from PySide6.QtGui import QImage, QColor
+    paths = []
+    for n, c in (("erstes", "#335577"), ("zweites", "#775533")):
+        img = QImage(64, 36, QImage.Format_RGB32); img.fill(QColor(c))
+        p = tmp_path / f"{n}.png"; img.save(str(p)); paths.append(str(p))
+    before = {w["id"] for w in eng.wallpapers}
+    assert eng.importUrls(paths) == 2
+    return [w["id"] for w in eng.wallpapers if w["id"] not in before]   # library dir is shared per test session
+
+
+def test_adjust_forms_reset_when_wallpaper_changes(qml_load, eng, qapp, tmp_path):
+    a, b = _import_two(eng, tmp_path)
+    root, w = qml_load("Main.qml")
+    root.setProperty("currentId", a); root.setProperty("panel", "adjust")
+    from PySide6.QtTest import QTest
+    QTest.qWait(500)                                        # tray grows open (visible = effective visibility)
+    _child(root, "renameButton").clicked.emit()
+    _child(root, "removeButton").clicked.emit()               # first click only arms it
+    assert _child(root, "renameRow").property("visible") is True
+    root.setProperty("currentId", b); _settle(qapp, 5)
+    assert _child(root, "renameRow").property("visible") is False
+    assert _child(root, "removeButton").property("confirm") is False
+    assert b in [x["id"] for x in eng.wallpapers]
+    assert w == []
+
+
+def test_rename_save_gives_keys_back(qml_load, eng, qapp, tmp_path):
+    a, _ = _import_two(eng, tmp_path)
+    root, w = qml_load("Main.qml")
+    root.setProperty("currentId", a); root.setProperty("panel", "adjust")
+    from PySide6.QtTest import QTest
+    QTest.qWait(500)                                        # tray grows open (visible = effective visibility)
+    _child(root, "renameButton").clicked.emit(); _settle(qapp)
+    _child(root, "renameField").setProperty("text", "Neuer Name")
+    _child(root, "saveRename").clicked.emit(); _settle(qapp, 5)
+    assert root.property("typing") is False
+    assert w == []
+
+
+def test_stage_render_scale_capped(qml_load, eng, qapp):
+    import json
+    from PySide6.QtQuick import QQuickItem
+    eng.setParam("synthwave", "renderScale", 1.0)
+    root, w = qml_load("Main.qml", running="synthwave"); _settle(qapp, 5)
+    scales = []
+    todo = [root.contentItem()]
+    while todo:
+        it = todo.pop()
+        mo = it.metaObject()
+        if mo.indexOfMethod("paramsJson()") >= 0:
+            scales.append(json.loads(it.paramsJson()).get("renderScale"))
+        todo.extend(it.childItems())
+    assert scales and all(s is not None and s <= 0.75 for s in scales)

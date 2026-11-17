@@ -40,7 +40,8 @@ Item {
             wp: l.w
             running: stage.running && l.shown
             fps: stage.fps
-            // the wallpaper's own renderScale, as on the desktop: the window has far fewer pixels than a monitor
+            // the wallpaper's own renderScale, at most 0.75: sharp in a normal window, bounded when maximised on 4K
+            paramsOverride: ({ renderScale: Math.min(0.75, l.w && l.w.params && l.w.params.renderScale !== undefined ? l.w.params.renderScale : 1.0) })
         }
     }
     Layer { id: a; shown: stage.slot === 0 }
