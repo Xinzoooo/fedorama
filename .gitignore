@@ -3,3 +3,4 @@ __pycache__/
 *.qsb
 /build/
 content/wallpapers/*/thumb.jpg
+.superpowers/

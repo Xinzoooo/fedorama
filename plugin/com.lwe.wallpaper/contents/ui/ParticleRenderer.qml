@@ -15,6 +15,7 @@ Item {
     readonly property real speedMul: p("speed", 1.0)
     readonly property real bass: slot ? slot.audio.x : 0
     readonly property real audioGain: p("audioReact", 0.0)
+    readonly property real particleMul: slot ? slot.particleMul : 1.0
 
     Rectangle {
         anchors.fill: parent
@@ -60,10 +61,10 @@ Item {
         y: mode === "top" ? -r.height * 0.05 : mode === "bottom" ? r.height * 1.02 : 0
         width: r.width
         height: (mode === "top" || mode === "bottom") ? 2 : r.height
-        emitRate: r.p("emitRate", 40) * (1 + r.audioGain * r.bass * 2)
+        emitRate: r.p("emitRate", 40) * r.particleMul * (1 + r.audioGain * r.bass * 2)
         lifeSpan: r.p("lifeSpan", 8000) / r.speedMul
         lifeSpanVariation: r.p("lifeSpanVariation", 2000) / r.speedMul
-        maximumEmitted: r.p("maxParticles", 1500)
+        maximumEmitted: Math.round(r.p("maxParticles", 1500) * r.particleMul)
         size: r.p("size", 12) * (1 + r.audioGain * r.bass * 0.8)
         sizeVariation: r.p("sizeVariation", 6)
         endSize: r.p("endSize", -1)
@@ -91,7 +92,7 @@ Item {
         endSize: emitter.endSize
         velocity: emitter.velocity
         acceleration: emitter.acceleration
-        Component.onCompleted: burst(Math.min(emitter.maximumEmitted, r.p("prefill", 0)))
+        Component.onCompleted: burst(Math.min(emitter.maximumEmitted, Math.round(r.p("prefill", 0) * r.particleMul)))
     }
 
     Wander {

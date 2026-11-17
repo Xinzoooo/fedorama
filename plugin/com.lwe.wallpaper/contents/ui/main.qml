@@ -24,6 +24,10 @@ WallpaperItem {
     readonly property bool audioEnabled: configuration.AudioEnabled === true
     readonly property int bridgePort: configuration.BridgePort || 47811
     readonly property int transitionMs: configuration.Transition === undefined ? 900 : configuration.Transition
+    // performance preset (Leistungsstufe), applied on top of each wallpaper's own values
+    readonly property real renderMul: configuration.RenderMul > 0 ? configuration.RenderMul : 1.0
+    readonly property real renderMax: configuration.RenderMax > 0 ? configuration.RenderMax : 1.0
+    readonly property real particleMul: configuration.ParticleMul > 0 ? configuration.ParticleMul : 1.0
 
     // ---------------------------------------------------------------- state
     readonly property rect screenRect: Qt.rect(Screen.virtualX, Screen.virtualY, Screen.width, Screen.height)

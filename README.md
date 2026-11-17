@@ -14,10 +14,12 @@ sich selbst, wenn du spielst. Ein Befehl installiert alles nach `~/.local`, ohne
   Neon-Stadt, Regen am Fenster, Matrix …) und 4 Partikel-Effekte, alle unter MIT-Lizenz
 - **Echt im Hintergrund** – als Plasma-Wallpaper-Plugin, pro Monitor ein eigenes Wallpaper
 - **Eigene Inhalte** – Videos, GIFs, Bilder und Shadertoy-Shader per Drag & Drop, Ordner-Import oder CLI
+- **5 Leistungsstufen** – Winterschlaf, Cruise, Turbo, Overdrive (Ultra) und Hyperdrive (144 FPS + Supersampling); auch per `lwe quality <stufe>`
 - **Spart Ressourcen** – pausiert bei Vollbild und Fenster-Vollbild (pro Monitor), FPS-Limit,
   Render-Auflösung pro Shader; Videos werden automatisch in GPU-dekodierbares AV1 umgewandelt
 - **Interaktiv** – Parallaxe und Effekte folgen der Maus (auch unter Fenstern), Audio-Visualizer
 - **Playlists** – Rotation im Intervall oder Tag/Nacht-Wechsel, pro Monitor
+- **Sperrbildschirm** – das Wallpaper des ersten Monitors läuft auch beim Sperren (abschaltbar)
 - **Unaufdringlich** – startet beim Login im Tray, schlichte App, Look komplett über `themes/*.json`
 
 ## Installieren / Deinstallieren

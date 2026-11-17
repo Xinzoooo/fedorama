@@ -1,5 +1,8 @@
 """Tiny local HTTP server. KWin posts the global cursor position, the wallpaper plugin
-polls /state for cursor + audio data. Listens on 127.0.0.1 only."""
+polls /state for cursor + audio data, the panel widget reads /status and sends /cmd.
+Listens on 127.0.0.1 only. /status and /cmd need the header "X-LWE: 1": browsers can't
+send custom headers cross-origin without a CORS preflight (which we never answer), so
+web pages can't remote-control the app."""
 from __future__ import annotations
 
 import json
@@ -14,7 +17,8 @@ class Bridge:
         self.audio = audio
         self.cursor = [0.0, 0.0]
         self.cursor_seen = False
-        self.on_command = None          # optional callback(cmd: str)
+        self.on_command = None          # callback(msg: dict), called from the server thread
+        self.status = "{}"              # JSON snapshot for the panel widget, set by the main thread
         self._srv = None
 
     def start(self) -> bool:
@@ -35,6 +39,14 @@ class Bridge:
 
             def do_POST(self):
                 u = urlparse(self.path)
+                if u.path == "/cmd":
+                    if self.headers.get("X-LWE") != "1" or not bridge.on_command:
+                        return self._send(403)
+                    q = {k: v[0] for k, v in parse_qs(u.query).items()}
+                    if not q.get("cmd"):
+                        return self._send(400)
+                    bridge.on_command(q)
+                    return self._send(204)
                 if u.path == "/cursor":
                     q = parse_qs(u.query)
                     try:
@@ -54,6 +66,10 @@ class Bridge:
                         st["audio"] = [round(v, 3) for v in a.levels]
                         st["spectrum"] = [round(v, 3) for v in a.spectrum]
                     return self._send(200, json.dumps(st).encode())
+                if u.path == "/status":
+                    if self.headers.get("X-LWE") != "1":
+                        return self._send(403)
+                    return self._send(200, bridge.status.encode())
                 self._send(404)
 
         try:

@@ -33,6 +33,8 @@ def parse(argv):
     c = sub.add_parser("config", help="Einstellung setzen, z. B. 'lwe config fps 60' oder 'lwe config audio true'")
     c.add_argument("key")
     c.add_argument("value")
+    q = sub.add_parser("quality", help="Leistungsstufe: winterschlaf, cruise, turbo, overdrive, hyperdrive")
+    q.add_argument("preset", choices=["winterschlaf", "cruise", "turbo", "overdrive", "hyperdrive"])
     sub.add_parser("quit", help="laufende Instanz beenden")
     sub.add_parser("restore", help="Plasma-Standardhintergrund wiederherstellen")
     return p.parse_args(argv)
@@ -79,6 +81,9 @@ def handle(engine, msg: dict, show_window=None, quit_app=None) -> dict:
     elif c == "config":
         engine.setGlobal(msg["key"], msg["value"])
         return {"ok": True, "settings": engine.settings}
+    elif c == "quality":
+        engine.setQuality(msg["preset"])
+        return {"ok": True}
     elif c == "restore":
         engine.restoreDefault()
     elif c == "quit" and quit_app:
@@ -110,6 +115,8 @@ def main(argv=None):
         v = args.value
         msg["key"] = args.key
         msg["value"] = (v.lower() in ("1", "true", "on", "ja")) if v.lower() in ("1", "0", "true", "false", "on", "off", "ja", "nein") else (int(v) if v.isdigit() else v)
+    if cmd == "quality":
+        msg["preset"] = args.preset
     if cmd == "import":
         msg["paths"] = [str(Path(p).resolve()) for p in args.paths]
 
@@ -209,6 +216,12 @@ def main(argv=None):
     server.newConnection.connect(on_conn)
 
     tray = Tray(engine, show_window, quit_app)  # noqa: F841 (kept alive)
+
+    def remote(msg):
+        if msg.get("cmd") in ("show", "pause", "resume", "toggle", "next", "set", "quality"):
+            handle(engine, msg, show_window, quit_app)
+            engine._update_status()
+    engine.remoteCommand.connect(remote, Qt.QueuedConnection)
     signal.signal(signal.SIGINT, lambda *_: quit_app())
     signal.signal(signal.SIGTERM, lambda *_: quit_app())
     pulse = QTimer(); pulse.start(500); pulse.timeout.connect(lambda: None)   # let Python see signals

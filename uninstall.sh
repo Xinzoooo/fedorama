@@ -26,8 +26,16 @@ qdbus-qt6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript '
         if (d.wallpaperPlugin === "com.lwe.wallpaper") { d.wallpaperPlugin = "org.kde.image"; d.reloadConfig(); }
     });' >/dev/null 2>&1 && ok "Standard-Hintergrund aktiv" || echo "    – plasmashell nicht erreichbar, übersprungen"
 
-step "Entferne Plasma-Plugin und KWin-Script"
+if [ "$(kreadconfig6 --file kscreenlockerrc --group Greeter --key WallpaperPlugin 2>/dev/null)" = "com.lwe.wallpaper" ]; then
+    kwriteconfig6 --file kscreenlockerrc --group Greeter --key WallpaperPlugin --delete
+    ok "Sperrbildschirm zurückgesetzt"
+fi
+
+step "Entferne Plasma-Plugin, Leisten-Widget und KWin-Script"
 kpackagetool6 -t Plasma/Wallpaper -r com.lwe.wallpaper >/dev/null 2>&1 && ok "Plugin entfernt"
+qdbus-qt6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript '
+    panels().forEach(function (p) { p.widgets("com.lwe.panel").forEach(function (w) { w.remove(); }); });' >/dev/null 2>&1
+kpackagetool6 -t Plasma/Applet -r com.lwe.panel >/dev/null 2>&1 && ok "Leisten-Widget entfernt"
 kwriteconfig6 --file kwinrc --group Plugins --key lwecursorEnabled --delete 2>/dev/null
 kpackagetool6 -t KWin/Script -r lwecursor >/dev/null 2>&1 && ok "KWin-Script entfernt"
 qdbus-qt6 org.kde.KWin /KWin reconfigure >/dev/null 2>&1

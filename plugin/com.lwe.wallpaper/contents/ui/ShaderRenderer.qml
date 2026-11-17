@@ -13,7 +13,9 @@ Item {
     readonly property string dbg: "st=" + effect.status + " src=" + effect.fragmentShader + " " + effect.log
     readonly property string errorString: effect.status === ShaderEffect.Error ? "Shader-Fehler: " + effect.log : ""
 
-    readonly property real renderScale: slot ? Math.max(0.25, Math.min(1.0, slot.p("renderScale", 1.0))) : 1.0
+    // wallpaper's own renderScale * preset multiplier, capped by the preset (> 1 = supersampling)
+    readonly property real renderScale: slot ? Math.max(0.25, Math.min(Math.min(2.0, slot.renderMax),
+                                                                      slot.p("renderScale", 1.0) * slot.renderMul)) : 1.0
     readonly property real speed: slot ? slot.p("speed", 1.0) : 1.0
 
     Image {
@@ -38,8 +40,9 @@ Item {
         height: Math.ceil(r.height * r.renderScale)
         transformOrigin: Item.TopLeft
         scale: 1 / r.renderScale
-        layer.enabled: r.renderScale < 0.999
+        layer.enabled: Math.abs(r.renderScale - 1.0) > 0.001
         layer.smooth: true
+        layer.mipmap: r.renderScale > 1.001     // cleaner downsampling when supersampling
 
         ShaderEffect {
             id: effect

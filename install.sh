@@ -84,6 +84,15 @@ else
 fi
 ok "com.lwe.wallpaper"
 
+step "Widget für die Kontrollleiste"
+if kpackagetool6 -t Plasma/Applet -l 2>/dev/null | grep -qx "com.lwe.panel"; then
+    diff -rq "$SRC/plasmoid/com.lwe.panel" "$DATA/plasma/plasmoids/com.lwe.panel" >/dev/null 2>&1 || WAS_INSTALLED=1
+    kpackagetool6 -t Plasma/Applet -u "$SRC/plasmoid/com.lwe.panel" >/dev/null
+else
+    kpackagetool6 -t Plasma/Applet -i "$SRC/plasmoid/com.lwe.panel" >/dev/null
+fi
+ok "com.lwe.panel  (Rechtsklick auf die Leiste → Widgets hinzufügen → „Linux Wallpaper Engine“)"
+
 step "KWin-Script für die Mausposition"
 if kpackagetool6 -t KWin/Script -l 2>/dev/null | grep -qx "lwecursor"; then
     kpackagetool6 -t KWin/Script -u "$SRC/kwin/lwecursor" >/dev/null

@@ -26,6 +26,9 @@ Item {
     readonly property vector2d mouse: host ? host.mouse : Qt.vector2d(0.5, 0.5)
     readonly property vector4d audio: host ? host.audio : Qt.vector4d(0, 0, 0, 0)
     readonly property var spectrum: host ? host.spectrum : []
+    readonly property real renderMul: host ? host.renderMul : 1.0
+    readonly property real renderMax: host ? host.renderMax : 1.0
+    readonly property real particleMul: host ? host.particleMul : 1.0
 
     // Parallax: media layers are zoomed slightly and shifted against the cursor.
     readonly property real parallax: p("parallax", kind === "shader" ? 0 : 0.6)

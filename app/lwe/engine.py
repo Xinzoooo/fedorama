@@ -14,7 +14,7 @@ from pathlib import Path
 from PySide6.QtCore import Property, QObject, QTimer, QUrl, Signal, Slot
 from PySide6.QtGui import QDesktopServices, QGuiApplication
 
-from . import paths, plasma
+from . import paths, plasma, quality
 from .audio import AudioAnalyzer
 from .bridge import Bridge
 from .config import Config
@@ -42,6 +42,7 @@ class Engine(QObject):
     themeChanged = Signal()
     toast = Signal(str, str)            # message, kind (info|error|ok)
     showWindowRequested = Signal()
+    remoteCommand = Signal(dict)            # from the panel widget (bridge thread -> main thread)
     _optimized = Signal(str, bool, str)     # from worker thread -> main thread
 
     def __init__(self, headless: bool = False):
@@ -72,6 +73,12 @@ class Engine(QObject):
             self.bridge = Bridge(int(self.cfg.g["bridgePort"]), self.audio)
             if not self.bridge.start():
                 self.toast.emit("Live-Daten-Port belegt – Maus/Audio deaktiviert", "error")
+            self.bridge.on_command = self.remoteCommand.emit
+            self._status_timer = QTimer(self)
+            self._status_timer.setInterval(1000)
+            self._status_timer.timeout.connect(self._update_status)
+            self._status_timer.start()
+            self._update_status()
             self._sync_audio()
             self._timer = QTimer(self)
             self._timer.setInterval(20_000)
@@ -148,7 +155,13 @@ class Engine(QObject):
             "PauseOnFullscreen": bool(g["pauseOnFullscreen"]), "PauseOnMaximized": bool(g["pauseOnMaximized"]),
             "MouseEnabled": bool(g["mouse"]), "AudioEnabled": bool(g["audio"]),
             "BridgePort": int(g["bridgePort"]), "Transition": int(g["transition"]),
+            **self._quality_values(),
         }
+
+    def _quality_values(self) -> dict:
+        g = self.cfg.g
+        return {"RenderMul": float(g["renderMul"]), "RenderMax": float(g["renderMax"]),
+                "ParticleMul": float(g["particleMul"])}
 
     def apply_to(self, wid: str, screen: str = "") -> bool:
         w = self.lib.get(wid)
@@ -172,7 +185,51 @@ class Engine(QObject):
             return False
         self.cfg.save()
         self.refresh_screens()
+        self._sync_lockscreen()
         return True
+
+    # ================================================================ panel widget
+    def _update_status(self):
+        """Snapshot for the panel widget (served by the bridge as /status)."""
+        if not self.bridge:
+            return
+        def item(wid):
+            w = self.lib.get(wid)
+            return {"id": w.id, "title": w.title, "thumb": w.thumb} if w else None
+        screens = []
+        for s in self.screen_list():
+            screens.append({"name": s["name"], "wallpaper": item(s["wallpaper"]) if s["active"] else None})
+        self.bridge.status = json.dumps({
+            "paused": bool(self.cfg.data["paused"]),
+            "quality": self.cfg.g.get("quality", "custom"),
+            "presets": [{"id": p["id"], "name": p["name"]} for p in quality.PRESETS],
+            "screens": screens,
+            "favorites": [f for f in (item(i) for i in self.cfg.data["favorites"]) if f],
+        }, ensure_ascii=False)
+
+    # ================================================================ lock screen
+    def _lock_wallpaper(self) -> str:
+        """The lock screen shows the wallpaper of the first screen that has one of ours."""
+        for s in self.screen_list():
+            wid = s["wallpaper"]
+            if wid and s["active"] and self.lib.get(wid) and not self.lib.get(wid).error:
+                return wid
+        return ""
+
+    def _sync_lockscreen(self):
+        try:
+            wid = self._lock_wallpaper() if self.cfg.g.get("lockscreen", True) else ""
+            if not wid:
+                plasma.restore_lockscreen()
+                return
+            v = self._values(wid)
+            # The greeter is sandboxed (no network -> no bridge) and windows below it
+            # must not pause it, so it always runs plainly.
+            v.update({"Paused": False, "PauseOnFullscreen": False, "PauseOnMaximized": False,
+                      "MouseEnabled": False, "AudioEnabled": False, "Transition": 0})
+            plasma.apply_lockscreen(v)
+        except Exception as e:
+            print("lockscreen:", e)
 
     def _reapply_wallpaper(self, wid: str):
         """Push changed params of wid to every screen currently showing it."""
@@ -182,6 +239,8 @@ class Engine(QObject):
                     plasma.apply(s["index"], {"Params": json.dumps(self.merged_params(wid), ensure_ascii=False)})
                 except Exception as e:
                     print("reapply:", e)
+        if wid == self._lock_wallpaper():
+            self._sync_lockscreen()
 
     def _push_globals(self):
         g = self.cfg.g
@@ -190,7 +249,7 @@ class Engine(QObject):
                 "Fps": int(g["fps"]), "PauseOnFullscreen": bool(g["pauseOnFullscreen"]),
                 "PauseOnMaximized": bool(g["pauseOnMaximized"]), "MouseEnabled": bool(g["mouse"]),
                 "AudioEnabled": bool(g["audio"]), "Transition": int(g["transition"]),
-                "Paused": bool(self.cfg.data["paused"]),
+                "Paused": bool(self.cfg.data["paused"]), **self._quality_values(),
             })
         except Exception as e:
             print("push globals:", e)
@@ -201,6 +260,7 @@ class Engine(QObject):
             wid = s["wallpaper"]
             if wid and self.lib.get(wid) and not s["active"]:
                 self.apply_to(wid, s["name"])
+        self._sync_lockscreen()
 
     # ================================================================ playlists
     def _tick_playlists(self):
@@ -280,6 +340,7 @@ class Engine(QObject):
             for s in self.screen_list():
                 if s["wallpaper"] == wid and s["active"]:
                     plasma.apply(s["index"], self._values(wid))
+            self._sync_lockscreen()
             self.toast.emit(f"„{w.title}“ optimiert (AV1, {how}) – läuft jetzt über die Grafikkarte", "ok")
         elif w:
             self.toast.emit(f"„{w.title}“ konnte nicht optimiert werden: {how[:120]}", "error")
@@ -515,8 +576,28 @@ class Engine(QObject):
         w = self.lib.get(wid)
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(w.dir if w else paths.LIBRARY)))
 
+    @Property("QVariantList", constant=True)
+    def qualityPresets(self):
+        return quality.PRESETS
+
+    @Slot(str)
+    def setQuality(self, pid):
+        p = quality.BY_ID.get(pid)
+        if not p:
+            return
+        for k in quality.KEYS:
+            self.cfg.g[k] = p[k]
+        self.cfg.g["quality"] = pid
+        self.cfg.save()
+        self._push_globals()
+        self._sync_lockscreen()
+        self.settingsChanged.emit()
+        self.toast.emit(f"Leistungsstufe: {p['name']}", "ok")
+
     @Slot(str, "QVariant")
     def setGlobal(self, key, value):
+        if key in quality.KEYS:             # manual tweak leaves the preset
+            self.cfg.g["quality"] = quality.CUSTOM
         if key == "autostart":
             self._autostart(bool(value))
         elif key == "theme":
@@ -530,7 +611,10 @@ class Engine(QObject):
                 self._sync_audio()
             if key == "mouse":
                 self._kwin_script(bool(value))
-            self._push_globals()
+            if key in ("lockscreen", "fps"):
+                self._sync_lockscreen()
+            if key != "lockscreen":
+                self._push_globals()
         self.cfg.save()
         self.settingsChanged.emit()
 
@@ -568,6 +652,7 @@ class Engine(QObject):
     def restoreDefault(self):
         try:
             plasma.restore_default()
+            plasma.restore_lockscreen()
         except Exception as e:
             self.toast.emit(str(e), "error")
         self.refresh_screens()

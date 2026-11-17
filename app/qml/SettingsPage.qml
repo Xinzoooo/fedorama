@@ -39,6 +39,55 @@ Item {
 
             Section {
                 title: "Leistung"; icon: "gauge"
+                Text { text: "Leistungsstufe"; color: Theme.text; font.family: Theme.font; font.pixelSize: Theme.fontSize }
+                Grid {
+                    id: presetGrid
+                    width: parent.width
+                    columns: width > 640 ? 5 : (width > 380 ? 3 : 2)
+                    spacing: 8
+                    Repeater {
+                        model: lwe.qualityPresets
+                        Rectangle {
+                            id: card
+                            readonly property bool checked: page.s.quality === modelData.id
+                            width: (presetGrid.width - presetGrid.spacing * (presetGrid.columns - 1)) / presetGrid.columns
+                            height: 84
+                            radius: Theme.radiusSmall
+                            color: checked ? Theme.alpha(Theme.accent, 0.3) : (cardMa.containsMouse ? Theme.glassHover : Theme.glass)
+                            border.width: 1
+                            border.color: checked ? Theme.alpha(Theme.accent, 0.9) : Theme.border
+                            Behavior on color { ColorAnimation { duration: Theme.anim } }
+                            Column {
+                                anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; margins: 10 }
+                                spacing: 3
+                                Row {
+                                    spacing: 2
+                                    // level bars: 1..5
+                                    Repeater {
+                                        model: 5
+                                        Item {
+                                            width: 6; height: 12
+                                            Rectangle {
+                                                anchors.bottom: parent.bottom
+                                                width: 6; height: 4 + index * 2; radius: 1
+                                                color: index <= card.levelIndex ? Theme.accent2 : Theme.border
+                                            }
+                                        }
+                                    }
+                                }
+                                Text { text: modelData.name; color: card.checked ? "#ffffff" : Theme.text; font.family: Theme.font; font.pixelSize: Theme.fontSize; font.weight: Font.Medium }
+                                Text { width: parent.width; text: modelData.hint; wrapMode: Text.WordWrap; maximumLineCount: 2; elide: Text.ElideRight; color: Theme.textDim; font.family: Theme.font; font.pixelSize: Theme.fontSize - 3 }
+                            }
+                            readonly property int levelIndex: index
+                            MouseArea { id: cardMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: lwe.setQuality(modelData.id) }
+                        }
+                    }
+                }
+                Text {
+                    visible: page.s.quality === "custom"
+                    text: "Eigene Einstellung – wähle eine Stufe, um zurückzusetzen."
+                    color: Theme.textDim; font.family: Theme.font; font.pixelSize: Theme.fontSize - 2
+                }
                 NeonSlider {
                     width: parent.width; text: "Maximale Bildrate (Shader & Partikel)"
                     from: 10; to: 144; stepSize: 1; value: page.s.fps
@@ -81,6 +130,7 @@ Item {
             }
             Section {
                 title: "System"; icon: "power"
+                Toggle { width: parent.width; text: "Auch auf dem Sperrbildschirm"; hint: "Zeigt das Wallpaper des ersten Monitors beim Sperren."; checked: page.s.lockscreen; onToggled: (v) => lwe.setGlobal("lockscreen", v) }
                 Toggle { width: parent.width; text: "Beim Anmelden automatisch starten"; hint: "Startet im Hintergrund mit Tray-Symbol."; checked: page.s.autostart; onToggled: (v) => lwe.setGlobal("autostart", v) }
                 Row {
                     spacing: 10

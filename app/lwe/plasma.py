@@ -96,6 +96,43 @@ def restore_default(plugin: str = "org.kde.image") -> None:
     """)
 
 
+# ---------------------------------------------------------------- lock screen
+# kscreenlocker_greet loads the same wallpaper plugin, configured in kscreenlockerrc:
+#   [Greeter] WallpaperPlugin=...   and   [Greeter][Wallpaper][<plugin>][General] ...
+# The greeter reads the file each time the screen locks, so writing it is enough.
+LOCK_GROUP = ["Greeter", "Wallpaper", PLUGIN_ID, "General"]
+
+
+def _kwrite(groups: list[str], key: str, value=None) -> None:
+    cmd = ["kwriteconfig6", "--file", "kscreenlockerrc"]
+    for g in groups:
+        cmd += ["--group", g]
+    cmd += ["--key", key]
+    if value is None:
+        cmd.append("--delete")
+    else:
+        if isinstance(value, bool):
+            cmd += ["--type", "bool"]
+            value = "true" if value else "false"
+        cmd.append(str(value))
+    subprocess.run(cmd, check=True, capture_output=True, timeout=10)
+
+
+def apply_lockscreen(values: dict) -> None:
+    """Use our plugin on the lock screen with the given config values."""
+    for k, v in values.items():
+        _kwrite(LOCK_GROUP, k, v)
+    _kwrite(["Greeter"], "WallpaperPlugin", PLUGIN_ID)
+
+
+def restore_lockscreen() -> None:
+    """Give the lock screen back to Plasma's default wallpaper (only if it uses ours)."""
+    r = subprocess.run(["kreadconfig6", "--file", "kscreenlockerrc", "--group", "Greeter",
+                        "--key", "WallpaperPlugin"], capture_output=True, text=True, timeout=10)
+    if r.stdout.strip() == PLUGIN_ID:
+        _kwrite(["Greeter"], "WallpaperPlugin")
+
+
 if __name__ == "__main__":
     import sys
     if sys.argv[1:2] == ["screens"]:
@@ -104,3 +141,4 @@ if __name__ == "__main__":
         apply(None if sys.argv[2] == "all" else int(sys.argv[2]), json.loads(sys.argv[3]))
     elif sys.argv[1:2] == ["restore"]:
         restore_default()
+        restore_lockscreen()

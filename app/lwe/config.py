@@ -15,12 +15,17 @@ DEFAULTS = {
     "global": {
         "fps": 30,
         "pauseOnFullscreen": True,
-        "pauseOnMaximized": False,
+        "pauseOnMaximized": True,       # matches the default preset (cruise)
         "mouse": True,
         "audio": False,
         "transition": 900,
         "bridgePort": 47811,
         "autostart": True,
+        "lockscreen": True,
+        "quality": "cruise",      # preset id from quality.py, or "custom"
+        "renderMul": 1.0,
+        "renderMax": 0.75,
+        "particleMul": 0.7,
     },
     "screens": {},        # connector -> {"wallpaper": id}
     "playlists": {},      # connector -> {...}

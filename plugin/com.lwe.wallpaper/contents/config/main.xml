@@ -16,5 +16,8 @@
     <entry name="AudioEnabled" type="Bool"><default>false</default></entry>
     <entry name="BridgePort" type="Int"><default>47811</default></entry>
     <entry name="Transition" type="Int"><default>900</default></entry>
+    <entry name="RenderMul" type="Double"><default>1.0</default></entry>
+    <entry name="RenderMax" type="Double"><default>1.0</default></entry>
+    <entry name="ParticleMul" type="Double"><default>1.0</default></entry>
   </group>
 </kcfg>
