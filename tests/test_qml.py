@@ -222,3 +222,12 @@ def test_window_buttons_live_in_bar(qml_load, qapp):
     _child(root, "closeButton").clicked.emit(); _settle(qapp)
     assert root.property("visible") is False
     assert w == []
+
+
+def test_animation_budget():
+    import re, pathlib
+    qml = pathlib.Path(__file__).resolve().parent.parent / "app/qml"
+    durations = [int(d) for f in qml.glob("*.qml") for d in re.findall(r"duration: *(\d+)", f.read_text())]
+    assert durations and max(durations) <= 200
+    theme = (qml / "Theme.qml").read_text()
+    assert "fast: 70" in theme and "anim: 110" in theme and "slow: 200" in theme

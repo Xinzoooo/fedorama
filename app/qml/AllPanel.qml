@@ -40,7 +40,7 @@ Item {
             readonly property bool isCurrent: win.current && modelData.id === win.current.id
             width: 150; height: 94
             y: hov.hovered ? 0 : 3
-            Behavior on y { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on y { NumberAnimation { duration: 110; easing.type: Easing.OutCubic } }
             Thumb {
                 anchors.fill: parent
                 wp: modelData

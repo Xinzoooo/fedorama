@@ -35,7 +35,7 @@ Item {
             width: 14; height: 14; radius: 7
             color: Theme.text
             scale: ma.pressed ? 1.4 : (ma.containsMouse ? 1.15 : 1)
-            Behavior on scale { NumberAnimation { duration: 100 } }
+            Behavior on scale { NumberAnimation { duration: 60 } }
         }
         MouseArea {
             id: ma

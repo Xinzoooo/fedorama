@@ -12,7 +12,7 @@ Rectangle {
     border.color: checked ? Theme.text : (ma.containsMouse ? Qt.rgba(1, 1, 1, 0.33) : Qt.rgba(1, 1, 1, 0.16))
     Behavior on color { ColorAnimation { duration: Theme.fast } }
     scale: ma.pressed ? 0.96 : 1
-    Behavior on scale { NumberAnimation { duration: 80 } }
+    Behavior on scale { NumberAnimation { duration: 50 } }
     Text {
         id: label
         anchors.centerIn: parent

@@ -17,9 +17,9 @@ QtObject {
     readonly property color danger: "#ff4d5e"
     readonly property int radius: 16
     readonly property int radiusSmall: 11
-    readonly property int anim: 220
-    readonly property int fast: 140
-    readonly property int slow: 450
+    readonly property int anim: 110
+    readonly property int fast: 70
+    readonly property int slow: 200
     readonly property string font: "Inter Tight"
     readonly property string mono: "JetBrains Mono"
     readonly property int fontSize: 13

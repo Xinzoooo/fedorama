@@ -12,7 +12,7 @@ Rectangle {
 
     onPanelChanged: if (panel !== "") shown = panel
     height: target
-    Behavior on height { NumberAnimation { duration: 320; easing.type: Easing.OutCubic } }
+    Behavior on height { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
     onHeightChanged: if (height === 0 && panel === "") shown = ""
     visible: height > 0
     clip: true
@@ -28,7 +28,7 @@ Rectangle {
         height: tray.target - 44
         source: tray.shown ? tray.files[tray.shown] : ""
         opacity: tray.panel !== "" ? 1 : 0
-        Behavior on opacity { NumberAnimation { duration: 250 } }
-        transform: Translate { y: tray.panel !== "" ? 0 : 12; Behavior on y { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } } }
+        Behavior on opacity { NumberAnimation { duration: 120 } }
+        transform: Translate { y: tray.panel !== "" ? 0 : 8; Behavior on y { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } } }
     }
 }

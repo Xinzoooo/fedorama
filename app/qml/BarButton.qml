@@ -19,7 +19,7 @@ Item {
         color: b.active ? Theme.text : (ma.containsMouse ? (b.danger ? Theme.danger : Theme.glassHover) : "transparent")
         Behavior on color { ColorAnimation { duration: Theme.fast } }
         scale: ma.pressed ? 0.9 : 1
-        Behavior on scale { NumberAnimation { duration: 80; easing.type: Easing.OutCubic } }
+        Behavior on scale { NumberAnimation { duration: 50; easing.type: Easing.OutCubic } }
         Icon { anchors.centerIn: parent; name: b.icon; size: 20; color: b.iconColor }
     }
     MouseArea {
@@ -42,5 +42,5 @@ Item {
         border.color: Qt.rgba(1, 1, 1, 0.14)
         Text { id: tipText; anchors.centerIn: parent; text: b.tip; color: Theme.text; font { family: Theme.font; pixelSize: 11; weight: Font.Medium } }
     }
-    Timer { id: tipDelay; property bool done: false; interval: 450; running: ma.containsMouse; onRunningChanged: if (!running) done = false; onTriggered: done = true }
+    Timer { id: tipDelay; property bool done: false; interval: 300; running: ma.containsMouse; onRunningChanged: if (!running) done = false; onTriggered: done = true }
 }

@@ -58,13 +58,13 @@ Rectangle {
             SequentialAnimation {
                 id: swap
                 ParallelAnimation {
-                    NumberAnimation { target: nameText; property: "anchors.verticalCenterOffset"; to: 18; duration: 160; easing.type: Easing.InCubic }
-                    NumberAnimation { target: nameText; property: "opacity"; to: 0; duration: 160 }
+                    NumberAnimation { target: nameText; property: "anchors.verticalCenterOffset"; to: 18; duration: 80; easing.type: Easing.InCubic }
+                    NumberAnimation { target: nameText; property: "opacity"; to: 0; duration: 80 }
                 }
                 ScriptAction { script: { title.shown = title.target; nameText.anchors.verticalCenterOffset = -18 } }
                 ParallelAnimation {
-                    NumberAnimation { target: nameText; property: "anchors.verticalCenterOffset"; to: -7; duration: 260; easing.type: Easing.OutCubic }
-                    NumberAnimation { target: nameText; property: "opacity"; to: 1; duration: 200 }
+                    NumberAnimation { target: nameText; property: "anchors.verticalCenterOffset"; to: -7; duration: 130; easing.type: Easing.OutCubic }
+                    NumberAnimation { target: nameText; property: "opacity"; to: 1; duration: 110 }
                 }
             }
             Text {
@@ -122,7 +122,7 @@ Rectangle {
             color: win.justApplied ? Theme.ok : Theme.text
             Behavior on color { ColorAnimation { duration: Theme.anim } }
             scale: applyMa.pressed ? 0.95 : 1
-            Behavior on scale { NumberAnimation { duration: 80 } }
+            Behavior on scale { NumberAnimation { duration: 50 } }
             Rectangle {                             // hover ring
                 anchors.fill: parent; anchors.margins: -4; radius: 16
                 color: "transparent"; border.width: 4; border.color: Qt.rgba(1, 1, 1, 0.16)

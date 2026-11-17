@@ -147,8 +147,8 @@ ApplicationWindow {
             z: 5
             opacity: win.idle ? 0 : 1
             visible: opacity > 0
-            Behavior on opacity { NumberAnimation { duration: 350; easing.type: Easing.OutCubic } }
-            transform: Translate { y: win.idle ? 10 : 0; Behavior on y { NumberAnimation { duration: 350; easing.type: Easing.OutCubic } } }
+            Behavior on opacity { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+            transform: Translate { y: win.idle ? 10 : 0; Behavior on y { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } } }
         }
     }
     }
