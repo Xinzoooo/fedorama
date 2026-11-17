@@ -146,6 +146,12 @@ ApplicationWindow {
             }
         }
 
+        Tray {
+            anchors { left: bar.left; right: bar.right; bottom: bar.top; bottomMargin: 8 }
+            z: 5
+            panel: win.panel
+            maxHeight: Math.min(440, win.height - 160)
+        }
         Bar {
             id: bar
             anchors { left: parent.left; right: parent.right; bottom: parent.bottom; margins: 14 }

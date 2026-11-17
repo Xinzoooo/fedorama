@@ -37,3 +37,29 @@ def test_bar_next_and_apply(qml_load, plasma_calls):
     assert sorted(c[1] for c in plasma_calls if c[0] == "apply") == [0, 1, 2]
     assert root.property("justApplied") is True
     assert w == []
+
+
+def _settle(qapp, n=3):
+    for _ in range(n):
+        qapp.processEvents()
+
+
+def test_search_enter_jumps(qml_load, qapp):
+    root, w = qml_load("Main.qml", running="synthwave")
+    root.setProperty("panel", "search"); _settle(qapp)
+    s = _child(root, "searchField")
+    s.setProperty("text", "nord"); _settle(qapp)
+    s.accepted.emit(); _settle(qapp)
+    assert root.property("current")["id"] == "aurora"
+    assert root.property("panel") == ""
+    assert w == []
+
+
+def test_all_panel_favorites_filter(qml_load, eng, qapp):
+    eng.toggleFavorite("galaxy")
+    root, w = qml_load("Main.qml")
+    root.setProperty("panel", "all"); _settle(qapp)
+    assert _child(root, "allStrip").property("count") == len(root.property("visibleList").toVariant())
+    _child(root, "favFilter").clicked.emit(); _settle(qapp)
+    assert _child(root, "allStrip").property("count") == 1
+    assert w == []
