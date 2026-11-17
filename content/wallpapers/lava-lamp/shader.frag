@@ -1,4 +1,4 @@
-// Lava – Linux Wallpaper Engine, MIT
+// Lava – Fedorama, MIT
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
     float aspect = iResolution.x / iResolution.y;

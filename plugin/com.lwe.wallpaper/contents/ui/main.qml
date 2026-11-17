@@ -1,5 +1,5 @@
 /*
- * Linux Wallpaper Engine – Plasma 6 wallpaper plugin
+ * Fedorama – Plasma 6 wallpaper plugin
  * SPDX-License-Identifier: MIT
  *
  * Runs inside plasmashell, so it is drawn behind every window and desktop icon.

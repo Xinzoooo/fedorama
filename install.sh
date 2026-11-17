@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Linux Wallpaper Engine – Installation (nur unter ~/.local, kein sudo)
+# Fedorama – Installation (nur unter ~/.local, kein sudo)
 #   ./install.sh               installieren / aktualisieren
 #   ./install.sh --no-start    danach nicht automatisch öffnen
 #   ./install.sh --no-thumbs   keine Vorschaubilder rendern (z. B. ohne laufende Sitzung)
@@ -91,7 +91,7 @@ if kpackagetool6 -t Plasma/Applet -l 2>/dev/null | grep -qx "com.lwe.panel"; the
 else
     kpackagetool6 -t Plasma/Applet -i "$SRC/plasmoid/com.lwe.panel" >/dev/null
 fi
-ok "com.lwe.panel  (Rechtsklick auf die Leiste → Widgets hinzufügen → „Linux Wallpaper Engine“)"
+ok "com.lwe.panel  (Rechtsklick auf die Leiste → Widgets hinzufügen → „Fedorama“)"
 
 step "KWin-Script für die Mausposition"
 if kpackagetool6 -t KWin/Script -l 2>/dev/null | grep -qx "lwecursor"; then
@@ -107,7 +107,7 @@ ok "lwecursor aktiviert"
 step "Starter, Menüeintrag, Autostart"
 cat > "$BIN/lwe" <<EOF
 #!/bin/sh
-# Linux Wallpaper Engine launcher
+# Fedorama launcher
 PYTHONPATH="$LWE/app/app\${PYTHONPATH:+:\$PYTHONPATH}" exec python3 -m lwe.main "\$@"
 EOF
 chmod +x "$BIN/lwe"
@@ -117,7 +117,7 @@ cp "$SRC/assets/lwe.svg" "$DATA/icons/hicolor/scalable/apps/lwe.svg"
 cat > "$HOME/.config/autostart/lwe.desktop" <<EOF
 [Desktop Entry]
 Type=Application
-Name=Linux Wallpaper Engine
+Name=Fedorama
 Exec=$BIN/lwe --tray
 Icon=lwe
 X-KDE-autostart-phase=2
@@ -143,7 +143,7 @@ if [ "$WAS_INSTALLED" = 1 ]; then
 fi
 
 echo
-echo "${c_ok}${c_b}Fertig!${c_0}  Starten: Startmenü → „Linux Wallpaper Engine“  oder  ${c_b}lwe${c_0}"
+echo "${c_ok}${c_b}Fertig!${c_0}  Starten: Startmenü → „Fedorama“  oder  ${c_b}lwe${c_0}"
 echo "         Deinstallieren: ${c_b}$SRC/uninstall.sh${c_0}"
 if [ "$START" = 1 ] && [ -n "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ]; then
     (setsid "$BIN/lwe" >/dev/null 2>&1 &)

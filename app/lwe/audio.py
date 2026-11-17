@@ -71,7 +71,7 @@ class AudioAnalyzer:
         self._stop.clear()
         self._proc = subprocess.Popen(
             ["parec", "--device=@DEFAULT_MONITOR@", "--format=s16le", f"--rate={RATE}", "--channels=1",
-             "--latency-msec=40", "--raw", "--client-name=Linux Wallpaper Engine"],
+             "--latency-msec=40", "--raw", "--client-name=Fedorama"],
             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
         self._thread = threading.Thread(target=self._run, name="lwe-audio", daemon=True)
         self._thread.start()

@@ -9,7 +9,7 @@ ApplicationWindow {
     width: 1180; height: 740
     minimumWidth: 820; minimumHeight: 540
     visible: true
-    title: "Linux Wallpaper Engine"
+    title: "Fedorama"
     flags: Qt.Window | Qt.FramelessWindowHint
     color: "transparent"
     font.family: Theme.font

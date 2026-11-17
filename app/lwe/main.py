@@ -14,7 +14,7 @@ SOCKET = f"lwe-{os.getuid()}"
 def parse(argv):
     # drop arguments a session manager may append (e.g. -session <id>)
     argv = [a for i, a in enumerate(argv) if not (a == "-session" or (i > 0 and argv[i - 1] == "-session"))]
-    p = argparse.ArgumentParser(prog="lwe", description="Linux Wallpaper Engine")
+    p = argparse.ArgumentParser(prog="lwe", description="Fedorama")
     p.add_argument("--tray", action="store_true", help="im Hintergrund starten (Tray, Playlists, Live-Daten)")
     sub = p.add_subparsers(dest="cmd")
     sub.add_parser("show", help="Fenster öffnen")
@@ -144,7 +144,7 @@ def main(argv=None):
 
     QGuiApplication.setDesktopFileName("lwe")
     app = QApplication(sys.argv[:1])
-    app.setApplicationName("Linux Wallpaper Engine")
+    app.setApplicationName("Fedorama")
     app.setOrganizationName("lwe")
     app.setQuitOnLastWindowClosed(False)
     # Never let the session manager restore us with an open window at login;

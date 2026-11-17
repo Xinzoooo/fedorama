@@ -1,4 +1,4 @@
-// Hyper-Tunnel – Linux Wallpaper Engine, MIT
+// Hyper-Tunnel – Fedorama, MIT
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
     uv -= (iMouseUV - 0.5) * 0.25;

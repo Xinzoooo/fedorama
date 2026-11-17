@@ -1,4 +1,4 @@
-// Audio-Ring (Visualizer) – Linux Wallpaper Engine, MIT
+// Audio-Ring (Visualizer) – Fedorama, MIT
 // Reagiert auf Musik, wenn "Auf Musik reagieren" aktiv ist.
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;

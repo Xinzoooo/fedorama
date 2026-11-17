@@ -1,5 +1,5 @@
 // Settings page shown in Plasma's "Configure Desktop and Wallpaper" dialog.
-// The full library lives in the Linux Wallpaper Engine app.
+// The full library lives in the Fedorama app.
 // SPDX-License-Identifier: MIT
 import QtQuick
 import QtQuick.Controls as QQC2
@@ -29,7 +29,7 @@ Kirigami.FormLayout {
         Layout.maximumWidth: Kirigami.Units.gridUnit * 24
         wrapMode: Text.WordWrap
         opacity: 0.75
-        text: "Wallpaper auswählen, importieren und Playlists verwalten: App „Linux Wallpaper Engine“ starten (Befehl: lwe)."
+        text: "Wallpaper auswählen, importieren und Playlists verwalten: App „Fedorama“ starten (Befehl: lwe)."
     }
     QQC2.SpinBox {
         id: fps

@@ -61,7 +61,7 @@ Item {
 
     Text {
         visible: loader.item && loader.item.errorString ? true : false
-        text: loader.item ? ("Linux Wallpaper Engine: " + loader.item.errorString) : ""
+        text: loader.item ? ("Fedorama: " + loader.item.errorString) : ""
         color: "#ff6b9a"; font.pixelSize: 16
         anchors { left: parent.left; bottom: parent.bottom; margins: 24 }
     }

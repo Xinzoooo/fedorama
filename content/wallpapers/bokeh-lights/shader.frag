@@ -1,4 +1,4 @@
-// Bokeh-Lichter – Linux Wallpaper Engine, MIT
+// Bokeh-Lichter – Fedorama, MIT
 float h11(float p) { p = fract(p * 0.1031); p *= p + 33.33; p *= p + p; return fract(p); }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {

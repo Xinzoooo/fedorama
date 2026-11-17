@@ -1,4 +1,4 @@
-// Plasma-Fluss – Linux Wallpaper Engine, MIT
+// Plasma-Fluss – Fedorama, MIT
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
     vec2 m = (iMouseUV - 0.5) * vec2(iResolution.x / iResolution.y, 1.0);

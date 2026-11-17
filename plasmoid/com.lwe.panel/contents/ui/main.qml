@@ -1,5 +1,5 @@
 /*
- * Linux Wallpaper Engine – panel widget
+ * Fedorama – panel widget
  * SPDX-License-Identifier: MIT
  *
  * Talks to the running app through its local bridge (127.0.0.1:47811):
@@ -38,7 +38,7 @@ PlasmoidItem {
 
     Plasmoid.icon: "lwe"
     Plasmoid.status: online ? PlasmaCore.Types.ActiveStatus : PlasmaCore.Types.PassiveStatus
-    toolTipMainText: "Linux Wallpaper Engine"
+    toolTipMainText: "Fedorama"
     toolTipSubText: !online ? "App läuft nicht"
                   : (current ? current.title : "Kein Wallpaper aktiv") + (paused ? " · pausiert" : "")
                     + "\nMittelklick: Pause · Mausrad: Nächstes"
@@ -120,7 +120,7 @@ PlasmoidItem {
             visible: !root.online
             spacing: Kirigami.Units.largeSpacing
             Kirigami.Icon { source: "lwe"; Layout.alignment: Qt.AlignHCenter; implicitWidth: Kirigami.Units.iconSizes.huge; implicitHeight: implicitWidth; opacity: 0.6 }
-            PC3.Label { text: "Linux Wallpaper Engine läuft nicht"; Layout.alignment: Qt.AlignHCenter }
+            PC3.Label { text: "Fedorama läuft nicht"; Layout.alignment: Qt.AlignHCenter }
             PC3.Button { text: "Starten"; icon.name: "media-playback-start"; Layout.alignment: Qt.AlignHCenter; onClicked: root.startApp(false) }
         }
 

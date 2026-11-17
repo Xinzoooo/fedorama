@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Linux Wallpaper Engine
+Name=Fedorama
 GenericName=Animierte Hintergründe
 Comment=Animierte Hintergründe: Shader, Videos, GIFs und Partikel
 Exec=@BIN@

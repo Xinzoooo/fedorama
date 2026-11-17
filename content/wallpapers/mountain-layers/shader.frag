@@ -1,4 +1,4 @@
-// Bergdämmerung – Linux Wallpaper Engine, MIT
+// Bergdämmerung – Fedorama, MIT
 float h11(float p) { p = fract(p * 0.1031); p *= p + 33.33; p *= p + p; return fract(p); }
 float n1(float x) { float i = floor(x), f = fract(x); return mix(h11(i), h11(i + 1.0), f * f * (3.0 - 2.0 * f)); }
 float ridge(float x, float s) { float v = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { v += a * n1(x * s + float(i) * 7.0); s *= 2.1; a *= 0.5; } return v; }

@@ -1,14 +1,14 @@
 {
     "KPlugin": {
         "Id": "com.lwe.wallpaper",
-        "Name": "Linux Wallpaper Engine",
-        "Name[de]": "Linux Wallpaper Engine",
+        "Name": "Fedorama",
+        "Name[de]": "Fedorama",
         "Description": "Animated wallpapers: shaders, videos, GIFs and particles",
         "Description[de]": "Animierte Hintergründe: Shader, Videos, GIFs und Partikel",
-        "Icon": "preferences-desktop-wallpaper",
+        "Icon": "lwe",
         "License": "MIT",
         "Version": "1.0.0",
-        "Authors": [{ "Name": "Linux Wallpaper Engine" }]
+        "Authors": [{ "Name": "Fedorama" }]
     },
     "KPackageStructure": "Plasma/Wallpaper",
     "X-Plasma-API-Minimum-Version": "6.0"

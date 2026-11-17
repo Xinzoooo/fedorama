@@ -1,4 +1,4 @@
-// Synthwave-Grid – Linux Wallpaper Engine, MIT
+// Synthwave-Grid – Fedorama, MIT
 float h21(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(float x) { float i = floor(x), f = fract(x); return mix(h21(vec2(i, 0.0)), h21(vec2(i + 1.0, 0.0)), f * f * (3.0 - 2.0 * f)); }
 

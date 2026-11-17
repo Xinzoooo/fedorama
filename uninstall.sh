@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Linux Wallpaper Engine – Deinstallation
+# Fedorama – Deinstallation
 #   ./uninstall.sh           entfernt Programm, Plugin, KWin-Script, Starter, Autostart.
 #                            Deine importierten Wallpaper + Einstellungen bleiben erhalten.
 #   ./uninstall.sh --purge   entfernt zusätzlich ~/.local/share/lwe komplett (Bibliothek, Einstellungen)
@@ -54,4 +54,4 @@ else
     echo "    (komplett löschen: ./uninstall.sh --purge)"
 fi
 echo
-echo "${c_ok}${c_b}Linux Wallpaper Engine wurde deinstalliert.${c_0}"
+echo "${c_ok}${c_b}Fedorama wurde deinstalliert.${c_0}"

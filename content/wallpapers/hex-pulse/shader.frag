@@ -1,4 +1,4 @@
-// Hexagon-Puls – Linux Wallpaper Engine, MIT
+// Hexagon-Puls – Fedorama, MIT
 vec4 hexCoords(vec2 uv) {
     vec2 r = vec2(1.0, 1.7320508);
     vec2 h = r * 0.5;

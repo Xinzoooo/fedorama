@@ -1,4 +1,4 @@
-// Sends the global cursor position to the Linux Wallpaper Engine bridge.
+// Sends the global cursor position to the Fedorama bridge.
 // Wayland clients cannot read the cursor outside their own windows, KWin can.
 // Only sends when the cursor moved; stops trying for a while if the app is not running.
 // SPDX-License-Identifier: MIT

@@ -1,6 +1,8 @@
 <div align="center">
 
-# Linux Wallpaper Engine
+<img src="assets/lwe.svg" width="96" alt="Fedorama-Logo">
+
+# Fedorama
 
 **Lebendige Hintergründe für KDE Plasma 6 unter Wayland.**<br>
 Live-Shader, Partikel, Videos und GIFs direkt auf dem Desktop – hinter allen Fenstern und Icons.

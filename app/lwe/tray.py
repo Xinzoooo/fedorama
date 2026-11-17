@@ -18,7 +18,7 @@ class Tray:
     def __init__(self, engine, show_window, quit_app):
         self.engine = engine
         self.icon = QSystemTrayIcon(app_icon())
-        self.icon.setToolTip("Linux Wallpaper Engine")
+        self.icon.setToolTip("Fedorama")
         self.menu = QMenu()
         self.show_window = show_window
         self.quit_app = quit_app
@@ -37,7 +37,7 @@ class Tray:
             self.engine.togglePause()
 
     def _update_tip(self):
-        self.icon.setToolTip("Linux Wallpaper Engine – " + ("pausiert" if self.engine.paused else "läuft"))
+        self.icon.setToolTip("Fedorama – " + ("pausiert" if self.engine.paused else "läuft"))
 
     def _act(self, text, fn, icon=None):
         a = QAction(text, self.menu)

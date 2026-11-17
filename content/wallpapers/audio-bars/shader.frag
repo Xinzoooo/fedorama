@@ -1,4 +1,4 @@
-// Audio-Balken (Visualizer) – Linux Wallpaper Engine, MIT
+// Audio-Balken (Visualizer) – Fedorama, MIT
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 q = fragCoord / iResolution.xy;
     float n = 48.0;

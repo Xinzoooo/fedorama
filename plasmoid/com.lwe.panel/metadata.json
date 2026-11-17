@@ -1,12 +1,12 @@
 {
     "KPlugin": {
         "Id": "com.lwe.panel",
-        "Name": "Linux Wallpaper Engine",
-        "Name[de]": "Linux Wallpaper Engine",
+        "Name": "Fedorama",
+        "Name[de]": "Fedorama",
         "Description": "Control animated wallpapers from the panel",
         "Description[de]": "Live-Wallpaper aus der Kontrollleiste steuern",
         "Icon": "lwe",
-        "Authors": [{ "Name": "Linux Wallpaper Engine" }],
+        "Authors": [{ "Name": "Fedorama" }],
         "Category": "Utilities",
         "License": "MIT",
         "Version": "1.0"
