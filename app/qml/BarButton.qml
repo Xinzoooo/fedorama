@@ -6,8 +6,9 @@ Item {
     property string icon
     property string tip
     property bool active: false
+    property bool danger: false                     // hover turns red (close)
     property color accent: "transparent"          // fixed icon colour (e.g. the red heart)
-    readonly property color iconColor: active ? "#000000" : (accent.a > 0 ? accent : (ma.containsMouse ? Theme.text : Theme.textSoft))
+    readonly property color iconColor: active ? "#000000" : (danger && ma.containsMouse ? Theme.text : accent.a > 0 ? accent : (ma.containsMouse ? Theme.text : Theme.textSoft))
     signal clicked()
     width: 40; height: 40
     opacity: enabled ? 1 : 0.35
@@ -15,7 +16,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: Theme.radiusSmall
-        color: b.active ? Theme.text : (ma.containsMouse ? Theme.glassHover : "transparent")
+        color: b.active ? Theme.text : (ma.containsMouse ? (b.danger ? Theme.danger : Theme.glassHover) : "transparent")
         Behavior on color { ColorAnimation { duration: Theme.fast } }
         scale: ma.pressed ? 0.9 : 1
         Behavior on scale { NumberAnimation { duration: 80; easing.type: Easing.OutCubic } }

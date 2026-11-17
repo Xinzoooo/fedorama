@@ -214,3 +214,11 @@ def test_frame_margin_is_resize_only(qml_load, qapp):
     assert stage.mapToScene(QPointF(0, 0)).x() == m
     assert root.property("color").alpha() == 0          # transparent window
     assert w == []
+
+
+def test_window_buttons_live_in_bar(qml_load, qapp):
+    root, w = qml_load("Main.qml")
+    assert _child(root, "minimizeButton") is not None
+    _child(root, "closeButton").clicked.emit(); _settle(qapp)
+    assert root.property("visible") is False
+    assert w == []

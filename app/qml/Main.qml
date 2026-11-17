@@ -150,33 +150,7 @@ ApplicationWindow {
             Behavior on opacity { NumberAnimation { duration: 350; easing.type: Easing.OutCubic } }
             transform: Translate { y: win.idle ? 10 : 0; Behavior on y { NumberAnimation { duration: 350; easing.type: Easing.OutCubic } } }
         }
-
-        // window buttons: only while the mouse is over the window
-        Row {
-            anchors { top: parent.top; right: parent.right; margins: 12 }
-            spacing: 4
-            z: 10
-            opacity: hover.hovered && !win.idle ? 1 : 0
-            visible: opacity > 0
-            Behavior on opacity { NumberAnimation { duration: Theme.anim } }
-            WinButton { icon: "minus"; tip: "Minimieren"; onClicked: win.showMinimized() }
-            WinButton { icon: "close"; tip: "In den Tray"; danger: true; onClicked: win.close() }
-        }
     }
-    }
-
-    component WinButton: Rectangle {
-        id: wb
-        property string icon
-        property string tip
-        property bool danger: false
-        signal clicked()
-        width: 28; height: 28; radius: 8
-        color: ma.containsMouse ? (danger ? Theme.danger : Theme.text) : Qt.rgba(0, 0, 0, 0.5)
-        Behavior on color { ColorAnimation { duration: Theme.fast } }
-        Icon { anchors.centerIn: parent; name: wb.icon; size: 15; color: ma.containsMouse && !wb.danger ? "#000000" : Theme.text }
-        MouseArea { id: ma; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: wb.clicked() }
-        ToolTip.visible: ma.containsMouse; ToolTip.text: tip; ToolTip.delay: 600
     }
 
     // ------------------------------------------------------------ resize edges (the shadow margin)

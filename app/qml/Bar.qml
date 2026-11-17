@@ -38,13 +38,17 @@ Rectangle {
 
     // ---------------------------------------------------- centre: ‹ name ›
     Row {
-        anchors.centerIn: parent
+        // centred in the bar when there is room, otherwise in the gap between the side groups
+        readonly property real gapLeft: leftGroup.x + leftGroup.width + 12
+        readonly property real gapRight: rightGroup.x - 12
+        x: Math.max(gapLeft, Math.min((bar.width - width) / 2, gapRight - width))
+        anchors.verticalCenter: parent.verticalCenter
         spacing: 14
         BarButton { objectName: "prevButton"; icon: "prev"; tip: "Zurück (←)"; anchors.verticalCenter: parent.verticalCenter; onClicked: win.step(-1) }
         Item {
             id: title
-            // the centre stays centred, so it may only use what the wider side group leaves free
-            width: Math.max(120, Math.min(300, bar.width - 2 * (Math.max(leftGroup.width + 10, rightGroup.width + 12) + 12) - 2 * (40 + 14)))
+            // whatever the gap between the side groups leaves for the name (arrows take 2 × (40 + 14))
+            width: Math.max(80, Math.min(300, rightGroup.x - leftGroup.x - leftGroup.width - 24 - 2 * (40 + 14)))
             height: 44
             anchors.verticalCenter: parent.verticalCenter
             clip: true
@@ -139,5 +143,8 @@ Rectangle {
             }
             MouseArea { id: applyMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: applyButton.clicked() }
         }
+        Rectangle { width: 1; height: 22; color: Qt.rgba(1, 1, 1, 0.16); anchors.verticalCenter: parent.verticalCenter }
+        BarButton { objectName: "minimizeButton"; anchors.verticalCenter: parent.verticalCenter; icon: "minus"; tip: "Minimieren"; onClicked: win.showMinimized() }
+        BarButton { objectName: "closeButton"; anchors.verticalCenter: parent.verticalCenter; icon: "close"; tip: "In den Tray"; danger: true; onClicked: win.close() }
     }
 }
