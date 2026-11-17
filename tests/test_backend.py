@@ -44,3 +44,16 @@ def test_stale_hidden_ids_do_not_block(eng):
     ids = [w["id"] for w in eng.wallpapers]
     for i in ids[1:]:
         assert eng.toggleHidden(i) is True
+
+
+def test_apply_reasks_plasma_when_screen_list_was_empty(qapp, plasma_calls, monkeypatch, tmp_path):
+    # app started while plasmashell was restarting: first answer empty, later plasma is back
+    from lwe import paths, plasma
+    from lwe.engine import Engine
+    monkeypatch.setattr(paths, "CONFIG", tmp_path / "config.json")
+    e = Engine(headless=True)
+    assert e.screen_list() == []
+    monkeypatch.setattr(plasma, "screens", lambda: [
+        {"index": 0, "x": 0, "y": 0, "w": 1920, "h": 1080, "plugin": plasma.PLUGIN_ID}])
+    assert e.apply_to("aurora") is True
+    assert [c[1] for c in plasma_calls if c[0] == "apply"] == [0]

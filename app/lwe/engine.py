@@ -167,6 +167,8 @@ class Engine(QObject):
         if w.error:
             self.toast.emit(f"{w.title}: {w.error}", "error")
             return False
+        if not self._plasma_screens:
+            self.refresh_screens()   # plasmashell may have been (re)starting when we last asked
         targets = [s for s in self.screen_list() if not screen or s["name"] == screen]
         if not targets:
             self.toast.emit("Kein passender Bildschirm gefunden", "error")
@@ -369,7 +371,7 @@ class Engine(QObject):
             AUTOSTART.parent.mkdir(parents=True, exist_ok=True)
             exe = shutil.which("lwe") or str(Path.home() / ".local/bin/lwe")
             AUTOSTART.write_text(
-                "[Desktop Entry]\nType=Application\nName=Linux Wallpaper Engine\n"
+                "[Desktop Entry]\nType=Application\nName=Fedorama\n"
                 f"Exec={exe} --tray\nIcon=lwe\nX-KDE-autostart-phase=2\nNoDisplay=true\n", encoding="utf-8")
         elif AUTOSTART.exists():
             AUTOSTART.unlink()
