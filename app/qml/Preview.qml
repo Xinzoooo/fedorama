@@ -18,6 +18,10 @@ Item {
         property vector2d mouse: p.mouse
         property vector4d audio: Qt.vector4d(0, 0, 0, 0)
         property var spectrum: []
+        // the app preview ignores the quality multipliers; renderScale comes via paramsOverride
+        property real renderMul: 1.0
+        property real renderMax: 1.0
+        property real particleMul: 1.0
     }
     function paramsJson() {
         if (!wp) return "{}"

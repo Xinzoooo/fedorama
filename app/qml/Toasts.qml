@@ -1,9 +1,9 @@
+// Short messages, top centre: white pill (errors red), slides in from above.
 import QtQuick
 
 Column {
     id: toasts
-    spacing: 10
-    width: 380
+    spacing: 8
     function push(msg, kind) {
         for (var i = 0; i < toastModel.count; i++) if (toastModel.get(i).msg === msg) return
         while (toastModel.count >= 3) toastModel.remove(0)
@@ -12,27 +12,27 @@ Column {
     ListModel { id: toastModel }
     Repeater {
         model: toastModel
-        Glass {
+        Rectangle {
             id: t
-            width: toasts.width
-            height: msgText.implicitHeight + 28
-            color: Theme.alpha(Theme.bg, 0.88)
-            glowing: true
-            glowColor: kind === "error" ? Theme.danger : (kind === "ok" ? Theme.ok : Theme.accent2)
+            anchors.horizontalCenter: parent ? parent.horizontalCenter : undefined
+            width: Math.min(520, label.implicitWidth + 32)
+            height: label.implicitHeight + 18
+            radius: 12
+            color: kind === "error" ? Theme.danger : Theme.text
             opacity: 0
-            x: 40
-            Component.onCompleted: { opacity = 1; x = 0 }
+            y: -20
+            Component.onCompleted: { opacity = 1; y = 0; life.start() }
             Behavior on opacity { NumberAnimation { duration: Theme.anim } }
-            Behavior on x { NumberAnimation { duration: Theme.anim; easing.type: Easing.OutCubic } }
-            Rectangle { width: 4; radius: 2; anchors { left: parent.left; top: parent.top; bottom: parent.bottom; margins: 10 } color: t.glowColor }
             Text {
-                id: msgText
-                anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; leftMargin: 24; rightMargin: 14 }
-                text: msg; wrapMode: Text.WordWrap
-                color: Theme.text; font.family: Theme.font; font.pixelSize: Theme.fontSize
+                id: label
+                anchors.centerIn: parent
+                width: Math.min(implicitWidth, 488)
+                text: msg
+                wrapMode: Text.Wrap
+                color: kind === "error" ? Theme.text : "#000000"
+                font { family: Theme.font; pixelSize: Theme.fontSize; weight: Font.DemiBold }
             }
-            Timer { running: true; interval: kind === "error" ? 6000 : 3200; onTriggered: toastModel.remove(index) }
-            MouseArea { anchors.fill: parent; onClicked: toastModel.remove(index) }
+            Timer { id: life; interval: kind === "error" ? 5000 : 2200; onTriggered: toastModel.remove(index) }
         }
     }
 }

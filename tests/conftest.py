@@ -56,3 +56,37 @@ def toasts(eng):
     got = []
     eng.toast.connect(lambda m, k: got.append((m, k)))
     return got
+
+
+QML_NOISE = ("ShaderEffect", "QRhi", "qsb", "Failed to build graphics pipeline")
+
+
+@pytest.fixture
+def qml_load(eng, qapp):
+    """Load a QML file from app/qml with `lwe` = the test engine; returns (root, warnings)."""
+    from PySide6.QtCore import QUrl
+    from PySide6.QtQml import QQmlApplicationEngine
+    engines = []
+
+    def load(name, running=""):
+        if running:
+            eng.cfg.screen(SCREENS[0]["name"])["wallpaper"] = running
+            eng.screensChanged.emit()
+        q = QQmlApplicationEngine()
+        warnings = []
+        q.warnings.connect(lambda ws: warnings.extend(
+            w.toString() for w in ws if not any(n in w.toString() for n in QML_NOISE)))
+        q.rootContext().setContextProperty("lwe", eng)
+        q.load(QUrl.fromLocalFile(str(ROOT / "app/qml" / name)))
+        for _ in range(3):
+            qapp.processEvents()
+        engines.append(q)
+        roots = q.rootObjects()
+        return (roots[0] if roots else None), warnings
+
+    yield load
+    for q in engines:
+        for r in q.rootObjects():
+            r.deleteLater()
+        q.deleteLater()
+    qapp.processEvents()

@@ -177,10 +177,6 @@ def main(argv=None):
             return
         qml = QQmlApplicationEngine()
         qml.rootContext().setContextProperty("lwe", engine)
-        # dev/test helpers: open a page or a wallpaper's detail panel right away
-        qml.rootContext().setContextProperty("lweStart", {
-            "page": int(os.environ.get("LWE_START_PAGE", "0")),
-            "detail": os.environ.get("LWE_START_DETAIL", "")})
         qml.load(QUrl.fromLocalFile(str(paths.APP_DIR / "qml/Main.qml")))
         if not qml.rootObjects():
             print("QML konnte nicht geladen werden", file=sys.stderr)

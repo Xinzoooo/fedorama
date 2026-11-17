@@ -1,7 +1,8 @@
+// The app window: frameless, ambient frame, one wallpaper live on the stage.
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
-import QtQuick.Layouts
+import QtQuick.Window
 
 ApplicationWindow {
     id: win
@@ -9,170 +10,204 @@ ApplicationWindow {
     minimumWidth: 820; minimumHeight: 540
     visible: true
     title: "Linux Wallpaper Engine"
-    color: Theme.bg
+    flags: Qt.Window | Qt.FramelessWindowHint
+    color: "#0a0a0a"
     font.family: Theme.font
 
-    property int page: 0          // 0 library, 1 favorites, 2 screens, 3 settings
-    property string detailId: ""
-    property string backdropId: lwe.screens.length ? lwe.screens[0].wallpaper : ""
-    readonly property string backdropThumb: {
-        var id = detailId || backdropId
-        var all = lwe.wallpapers
-        for (var i = 0; i < all.length; i++) if (all[i].id === id) return all[i].thumb
-        return all.length ? all[0].thumb : ""
+    // ------------------------------------------------------------ state
+    property var visibleList: []
+    property string currentId: ""
+    property int lastIndex: 0
+    readonly property int index: indexOf(currentId)
+    readonly property var current: index >= 0 ? visibleList[index] : null
+    property string panel: ""               // "" | all | search | adjust | settings
+    property bool idle: false
+    property bool justApplied: false
+    readonly property bool active: visible && visibility !== Window.Minimized
+                                   && Qt.application.state === Qt.ApplicationActive
+
+    function indexOf(id) {
+        for (var i = 0; i < visibleList.length; i++) if (visibleList[i].id === id) return i
+        return -1
     }
+    function rebuild() {
+        visibleList = lwe.wallpapers.filter(function(w) { return !w.hidden })
+        if (visibleList.length && indexOf(currentId) < 0)       // current got hidden or removed
+            currentId = visibleList[Math.min(lastIndex, visibleList.length - 1)].id
+    }
+    function startIndex() {
+        var running = lwe.screens.length ? lwe.screens[0].wallpaper : ""
+        return Math.max(0, indexOf(running))
+    }
+    function step(d) {
+        var n = visibleList.length
+        if (!n) return
+        show(visibleList[((index < 0 ? 0 : index) + d + n) % n].id)
+    }
+    function show(id) { currentId = id; lastIndex = Math.max(0, indexOf(id)); wake() }
+    function togglePanel(name) { panel = panel === name ? "" : name; wake() }
+    function applyCurrent() {
+        if (current && lwe.applyCurrent(current.id)) { justApplied = true; appliedTimer.restart() }
+    }
+    function hideCurrent() {
+        if (!current || visibleList.length < 2) return
+        lastIndex = index
+        lwe.toggleHidden(current.id)
+    }
+    function wake() { idle = false; idleTimer.restart() }
 
     Connections {
         target: lwe
+        function onItemsChanged() { win.rebuild() }
         function onToast(msg, kind) { toasts.push(msg, kind) }
     }
+    Component.onCompleted: {
+        rebuild()
+        if (visibleList.length) show(visibleList[startIndex()].id)
+    }
+    Timer { id: idleTimer; interval: 2500; onTriggered: win.idle = win.panel === "" }
+    Timer { id: appliedTimer; interval: 1400; onTriggered: win.justApplied = false }
+    onPanelChanged: if (panel !== "") idle = false
 
-    // ------------------------------------------------------------ backdrop
+    FontLoader { source: "fonts/InterTight.ttf" }
+    FontLoader { source: "fonts/JetBrainsMono.ttf" }
+
+    // ------------------------------------------------------------ ambient frame
+    // blurred still of the current wallpaper (never the live shader: costs nothing per frame)
     Item {
-        id: backdrop
+        id: ambient
         anchors.fill: parent
-        visible: Theme.backdrop
-        Image {
-            id: bgA
+        anchors.margins: -40
+        visible: false
+        property string src: win.current && win.current.thumb ? "file://" + win.current.thumb : ""
+        property bool flip: false
+        onSrcChanged: { flip = !flip; (flip ? ambA : ambB).source = src }
+        Image { id: ambA; anchors.fill: parent; fillMode: Image.PreserveAspectCrop; sourceSize.width: 320; asynchronous: true
+                opacity: ambient.flip ? 1 : 0; Behavior on opacity { NumberAnimation { duration: Theme.slow } } }
+        Image { id: ambB; anchors.fill: parent; fillMode: Image.PreserveAspectCrop; sourceSize.width: 320; asynchronous: true
+                opacity: ambient.flip ? 0 : 1; Behavior on opacity { NumberAnimation { duration: Theme.slow } } }
+    }
+    MultiEffect {
+        anchors.fill: ambient
+        source: ambient
+        visible: ambient.src !== ""
+        blurEnabled: true; blur: 1.0; blurMax: 64
+        saturation: 0.5
+        brightness: -0.45
+    }
+
+    // ------------------------------------------------------------ stage
+    Item {
+        id: stageBox
+        anchors.fill: parent
+        anchors.margins: 9
+
+        Item {
+            id: stageClip
             anchors.fill: parent
-            fillMode: Image.PreserveAspectCrop
-            source: win.backdropThumb ? "file://" + win.backdropThumb : ""
-            sourceSize.width: 480
+            layer.enabled: true
+            layer.effect: MultiEffect { maskEnabled: true; maskSource: stageMask }
+            Rectangle { anchors.fill: parent; color: "#000000" }
+            Stage {
+                anchors.fill: parent
+                wp: win.current
+                running: win.active
+                fps: lwe.settings.fps
+            }
+        }
+        Rectangle {
+            id: stageMask
+            anchors.fill: parent
+            radius: 13
             visible: false
+            layer.enabled: true
         }
-        MultiEffect {
+        Rectangle {                                  // fine inner edge
             anchors.fill: parent
-            source: bgA
-            blurEnabled: true; blurMax: Theme.backdropBlur; blur: 1.0
-            saturation: 0.25
-            opacity: bgA.status === Image.Ready ? 1 : 0
-            Behavior on opacity { NumberAnimation { duration: 600 } }
+            radius: 13
+            color: "transparent"
+            border.color: Qt.rgba(1, 1, 1, 0.07)
         }
-        Rectangle {
-            anchors.fill: parent
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: Theme.alpha(Theme.bg, Theme.backdropDim) }
-                GradientStop { position: 1.0; color: Theme.alpha(Theme.bg, Math.min(1, Theme.backdropDim + 0.25)) }
-            }
-        }
-        // two neon light blobs for depth
-        Rectangle {
-            width: parent.width * 0.6; height: width; radius: width / 2
-            x: -width * 0.3; y: -height * 0.45
-            color: Theme.alpha(Theme.accent, 0.16)
-            layer.enabled: true; layer.effect: MultiEffect { blurEnabled: true; blur: 1; blurMax: 64 }
-        }
-        Rectangle {
-            width: parent.width * 0.5; height: width; radius: width / 2
-            x: parent.width - width * 0.6; y: parent.height - height * 0.5
-            color: Theme.alpha(Theme.accent2, 0.10)
-            layer.enabled: true; layer.effect: MultiEffect { blurEnabled: true; blur: 1; blurMax: 64 }
-        }
-    }
 
-    // ------------------------------------------------------------ sidebar
-    Item {
-        id: sidebar
-        anchors { left: parent.left; top: parent.top; bottom: parent.bottom }
-        width: 184
-        Rectangle { anchors { right: parent.right; top: parent.top; bottom: parent.bottom } width: 1; color: Theme.border }
-
-        Column {
-            anchors { left: parent.left; right: parent.right; top: parent.top; margins: 12; topMargin: 18 }
-            spacing: 2
-            Text {
-                text: "Wallpaper Engine"
-                leftPadding: 10; bottomPadding: 18
-                font.family: Theme.font; font.pixelSize: Theme.fontSize; font.weight: Font.Medium
-                color: Theme.textDim
-            }
-            Repeater {
-                model: [["grid", "Bibliothek"], ["heart", "Favoriten"], ["monitor", "Monitore"], ["settings", "Einstellungen"]]
-                Item {
-                    width: parent.width; height: 32
-                    readonly property bool active: win.page === index
-                    Rectangle {
-                        anchors.fill: parent
-                        radius: Theme.radiusSmall
-                        color: parent.active ? Theme.glassHover : (nav.containsMouse ? Theme.alpha(Theme.text, 0.04) : "transparent")
-                    }
-                    Row {
-                        anchors { left: parent.left; leftMargin: 10; verticalCenter: parent.verticalCenter }
-                        spacing: 10
-                        Icon { name: modelData[0]; size: 15; color: parent.parent.active ? Theme.text : Theme.textDim; anchors.verticalCenter: parent.verticalCenter }
-                        Text {
-                            text: modelData[1]
-                            color: parent.parent.active ? Theme.text : Theme.textDim
-                            font.family: Theme.font; font.pixelSize: Theme.fontSize
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-                    }
-                    MouseArea { id: nav; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { win.page = index; if (index > 1) win.detailId = "" } }
-                }
+        HoverHandler { id: hover; onPointChanged: win.wake() }
+        DragHandler {                                // drag the free stage to move the window
+            target: null
+            grabPermissions: PointerHandler.TakeOverForbidden
+            onActiveChanged: if (active) win.startSystemMove()
+        }
+        WheelHandler {
+            enabled: win.panel === ""
+            property double last: 0
+            onWheel: (e) => {
+                var now = Date.now()
+                if (now - last < 350) return
+                last = now
+                win.step(e.angleDelta.y < 0 ? 1 : -1)
             }
         }
 
-        // quick controls
+        // window buttons: only while the mouse is over the window
         Row {
-            anchors { left: parent.left; bottom: parent.bottom; margins: 14 }
+            anchors { top: parent.top; right: parent.right; margins: 12 }
             spacing: 4
-            IconButton { icon: lwe.paused ? "play" : "pause"; size: 28; tip: lwe.paused ? "Fortsetzen" : "Pausieren"; active: lwe.paused; onClicked: lwe.togglePause() }
-            IconButton { icon: "next"; size: 28; tip: "Nächstes Wallpaper (alle Monitore)"; onClicked: lwe.nextWallpaper("") }
-            Text {
-                text: lwe.paused ? "Pausiert" : ""
-                color: Theme.textDim; font.family: Theme.font; font.pixelSize: Theme.fontSize - 1
-                anchors.verticalCenter: parent.verticalCenter; leftPadding: 4
-            }
-        }
-    }
-
-    // ------------------------------------------------------------ content
-    Item {
-        id: content
-        anchors { left: sidebar.right; right: parent.right; top: parent.top; bottom: parent.bottom; margins: 14; leftMargin: 22 }
-
-        LibraryPage {
-            id: lib
-            anchors { left: parent.left; top: parent.top; bottom: parent.bottom; topMargin: 10 }
-            width: win.detailId && win.page <= 1 ? parent.width - detail.width - 16 : parent.width
-            Behavior on width { NumberAnimation { duration: Theme.anim; easing.type: Easing.OutCubic } }
+            z: 10
+            opacity: hover.hovered && !win.idle ? 1 : 0
             visible: opacity > 0
-            opacity: win.page <= 1 ? 1 : 0
             Behavior on opacity { NumberAnimation { duration: Theme.anim } }
-            favoritesOnly: win.page === 1
-            selectedId: win.detailId
-            onOpenDetail: (id) => win.detailId = (win.detailId === id ? "" : id)
-        }
-        // pages are only created while shown (no hidden previews/video decoders)
-        Loader {
-            anchors.fill: parent; anchors.topMargin: 10
-            active: win.page === 2
-            sourceComponent: ScreensPage {
-                onChooseWallpaper: (screen) => { win.page = 0; toasts.push("Wähle ein Wallpaper und klicke im Detailbereich auf den Monitor " + screen + ".", "info") }
-            }
-        }
-        Loader {
-            anchors.fill: parent; anchors.topMargin: 10
-            active: win.page === 3
-            sourceComponent: SettingsPage {}
-        }
-        DetailPanel {
-            id: detail
-            anchors { top: parent.top; bottom: parent.bottom; topMargin: 10 }
-            width: 340
-            x: win.detailId && win.page <= 1 ? parent.width - width : parent.width + 40
-            Behavior on x { NumberAnimation { duration: Theme.anim + 80; easing.type: Easing.OutCubic } }
-            visible: x < parent.width
-            wid: win.detailId
-            onCloseRequested: win.detailId = ""
+            WinButton { icon: "minus"; tip: "Minimieren"; onClicked: win.showMinimized() }
+            WinButton { icon: "close"; tip: "In den Tray"; danger: true; onClicked: win.close() }
         }
     }
+
+    component WinButton: Rectangle {
+        id: wb
+        property string icon
+        property string tip
+        property bool danger: false
+        signal clicked()
+        width: 28; height: 28; radius: 8
+        color: ma.containsMouse ? (danger ? Theme.danger : Theme.text) : Qt.rgba(0, 0, 0, 0.5)
+        Behavior on color { ColorAnimation { duration: Theme.fast } }
+        Icon { anchors.centerIn: parent; name: wb.icon; size: 15; color: ma.containsMouse && !wb.danger ? "#000000" : Theme.text }
+        MouseArea { id: ma; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: wb.clicked() }
+        ToolTip.visible: ma.containsMouse; ToolTip.text: tip; ToolTip.delay: 600
+    }
+
+    // ------------------------------------------------------------ resize edges (the 9 px frame)
+    component Edge: MouseArea {
+        property int edges
+        hoverEnabled: true
+        onPressed: win.startSystemResize(edges)
+    }
+    Edge { edges: Qt.LeftEdge; anchors { left: parent.left; top: parent.top; bottom: parent.bottom; topMargin: 16; bottomMargin: 16 } width: 9; cursorShape: Qt.SizeHorCursor }
+    Edge { edges: Qt.RightEdge; anchors { right: parent.right; top: parent.top; bottom: parent.bottom; topMargin: 16; bottomMargin: 16 } width: 9; cursorShape: Qt.SizeHorCursor }
+    Edge { edges: Qt.TopEdge; anchors { top: parent.top; left: parent.left; right: parent.right; leftMargin: 16; rightMargin: 16 } height: 9; cursorShape: Qt.SizeVerCursor }
+    Edge { edges: Qt.BottomEdge; anchors { bottom: parent.bottom; left: parent.left; right: parent.right; leftMargin: 16; rightMargin: 16 } height: 9; cursorShape: Qt.SizeVerCursor }
+    Edge { edges: Qt.LeftEdge | Qt.TopEdge; width: 16; height: 16; cursorShape: Qt.SizeFDiagCursor }
+    Edge { edges: Qt.RightEdge | Qt.TopEdge; x: parent.width - 16; width: 16; height: 16; cursorShape: Qt.SizeBDiagCursor }
+    Edge { edges: Qt.LeftEdge | Qt.BottomEdge; y: parent.height - 16; width: 16; height: 16; cursorShape: Qt.SizeBDiagCursor }
+    Edge { edges: Qt.RightEdge | Qt.BottomEdge; x: parent.width - 16; y: parent.height - 16; width: 16; height: 16; cursorShape: Qt.SizeFDiagCursor }
+
+    // ------------------------------------------------------------ input
+    DropArea {
+        anchors.fill: parent
+        onDropped: (drop) => { if (drop.hasUrls) lwe.importUrls(drop.urls) }
+    }
+    readonly property bool typing: panel === "search"
+    Shortcut { sequence: "Left"; enabled: !win.typing; onActivated: win.step(-1) }
+    Shortcut { sequence: "Right"; enabled: !win.typing; onActivated: win.step(1) }
+    Shortcut { sequences: ["Return", "Enter"]; enabled: !win.typing; onActivated: win.applyCurrent() }
+    Shortcut { sequence: "Space"; enabled: !win.typing; onActivated: win.togglePanel("all") }
+    Shortcut { sequence: "/"; enabled: !win.typing; onActivated: win.togglePanel("search") }
+    Shortcut { sequence: "A"; enabled: !win.typing; onActivated: win.togglePanel("adjust") }
+    Shortcut { sequence: "F"; enabled: !win.typing; onActivated: if (win.current) lwe.toggleFavorite(win.current.id) }
+    Shortcut { sequence: "Delete"; enabled: !win.typing; onActivated: win.hideCurrent() }
+    Shortcut { sequence: "Escape"; onActivated: win.panel = "" }
+    Shortcut { sequence: "Ctrl+Q"; onActivated: Qt.quit() }
 
     Toasts {
         id: toasts
-        anchors { right: parent.right; bottom: parent.bottom; margins: 24 }
+        anchors { top: parent.top; horizontalCenter: parent.horizontalCenter; topMargin: 22 }
+        width: parent.width
     }
-    Shortcut { sequence: "Escape"; onActivated: win.detailId = "" }
-    Component.onCompleted: { page = lweStart.page; detailId = lweStart.detail }
-    Shortcut { sequence: "Ctrl+Q"; onActivated: win.close() }
 }
