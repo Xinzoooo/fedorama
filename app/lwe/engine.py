@@ -19,7 +19,7 @@ from .audio import AudioAnalyzer
 from .bridge import Bridge
 from .config import Config
 from .library import Library
-from .models import FilterModel, WallpaperModel
+from .models import WallpaperModel
 
 AUTOSTART = Path.home() / ".config/autostart/lwe.desktop"
 PARAM_KEYS = {"brightness", "hue", "saturation", "speed", "renderScale", "parallax", "fill",
@@ -55,7 +55,6 @@ class Engine(QObject):
         self._last_change: dict[str, float] = {}
         self._items = []                       # cached list for QML (lwe.wallpapers)
         self.model = WallpaperModel(self)
-        self.proxy = FilterModel(self.model)
         self._rebuild()
         self._pending_params = set()
         self._param_timer = QTimer(self)
@@ -397,8 +396,6 @@ class Engine(QObject):
         """One wallpaper changed: update only its row."""
         self.model.update(wid)
         self._items = list(self.model.rows)
-        if self.proxy.favoritesOnly:
-            self.proxy.invalidate()
         self.itemsChanged.emit()
 
     itemsChanged = Signal()
@@ -406,18 +403,6 @@ class Engine(QObject):
     @Property("QVariantList", notify=itemsChanged)
     def wallpapers(self):
         return self._items
-
-    @Property(QObject, constant=True)
-    def library(self):
-        return self.proxy
-
-    @Property("QVariantList", notify=libraryChanged)
-    def allTags(self):
-        tags = {}
-        for w in self.lib.items.values():
-            for t in w.tags:
-                tags[t] = tags.get(t, 0) + 1
-        return [t for t, _ in sorted(tags.items(), key=lambda kv: (-kv[1], kv[0]))]
 
     @Property("QVariantList", notify=screensChanged)
     def screens(self):

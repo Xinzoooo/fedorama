@@ -24,20 +24,8 @@ QtObject {
     readonly property string mono: "JetBrains Mono"
     readonly property int fontSize: 13
 
-    // aliases for the kept components (Toasts, Toggle, IconButton, Icon, Preview)
+    // aliases for the kept components (Toasts, Toggle, Icon, Preview)
     readonly property color accent: text
     readonly property color border: line
     readonly property color glassHover: Qt.rgba(1, 1, 1, 0.09)
-
-    // bis Task 9: only so the old pages keep loading until they are deleted
-    readonly property color bg2: textDim
-    readonly property color accent2: textDim
-    readonly property color accent3: textDim
-    readonly property real glow: 0
-    readonly property bool sheen: false
-    readonly property bool flat: true
-    readonly property bool backdrop: false
-    readonly property real backdropBlur: 0
-    readonly property real backdropDim: 0
-    readonly property int tileWidth: 160
 }

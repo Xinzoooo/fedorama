@@ -40,7 +40,7 @@ Item {
             wp: l.w
             running: stage.running && l.shown
             fps: stage.fps
-            paramsOverride: ({ renderScale: 0.6 })
+            // the wallpaper's own renderScale, as on the desktop: the window has far fewer pixels than a monitor
         }
     }
     Layer { id: a; shown: stage.slot === 0 }

@@ -117,3 +117,26 @@ def test_settings_playlist_mode(qml_load, eng, qapp):
     assert eng.cfg.playlist("DP-2")["enabled"] is True
     assert eng.cfg.playlist("DP-2")["mode"] == "interval"
     assert w == []
+
+
+def test_bar_fits_smallest_window(qml_load, qapp):
+    from PySide6.QtCore import QPointF
+    root, w = qml_load("Main.qml", running="ocean-sunset")
+    root.setProperty("width", 820); root.setProperty("height", 540); _settle(qapp, 5)
+    nxt, fav = _child(root, "nextButton"), _child(root, "favButton")
+    prev, settings = _child(root, "prevButton"), _child(root, "panel-settings")
+    assert nxt.mapToScene(QPointF(nxt.width(), 0)).x() <= fav.mapToScene(QPointF(0, 0)).x()
+    assert settings.mapToScene(QPointF(settings.width(), 0)).x() <= prev.mapToScene(QPointF(0, 0)).x()
+    assert w == []
+
+
+def test_import_without_thumbnail_renders(qml_load, eng, qapp, tmp_path):
+    from PySide6.QtGui import QImage, QColor
+    img = QImage(64, 36, QImage.Format_RGB32); img.fill(QColor("#335577"))
+    src = tmp_path / "plain.png"; img.save(str(src))
+    assert eng.importUrls([str(src)]) == 1
+    new = next(w for w in eng.wallpapers if not w["builtin"])
+    root, w = qml_load("Main.qml")
+    root.setProperty("currentId", new["id"]); root.setProperty("panel", "all"); _settle(qapp, 5)
+    assert root.property("current")["id"] == new["id"]
+    assert w == []

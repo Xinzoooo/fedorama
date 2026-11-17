@@ -21,6 +21,7 @@ Rectangle {
 
     // ---------------------------------------------------- left: panels
     Row {
+        id: leftGroup
         anchors { left: parent.left; leftMargin: 10; verticalCenter: parent.verticalCenter }
         spacing: 2
         Repeater {
@@ -42,7 +43,8 @@ Rectangle {
         BarButton { objectName: "prevButton"; icon: "prev"; tip: "Zurück (←)"; anchors.verticalCenter: parent.verticalCenter; onClicked: win.step(-1) }
         Item {
             id: title
-            width: Math.min(300, bar.width - 2 * 230)
+            // the centre stays centred, so it may only use what the wider side group leaves free
+            width: Math.max(120, Math.min(300, bar.width - 2 * (Math.max(leftGroup.width + 10, rightGroup.width + 12) + 12) - 2 * (40 + 14)))
             height: 44
             anchors.verticalCenter: parent.verticalCenter
             clip: true
@@ -87,6 +89,7 @@ Rectangle {
 
     // ---------------------------------------------------- right: favourite, hide, apply
     Row {
+        id: rightGroup
         anchors { right: parent.right; rightMargin: 12; verticalCenter: parent.verticalCenter }
         spacing: 6
         BarButton {

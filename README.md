@@ -20,7 +20,9 @@ sich selbst, wenn du spielst. Ein Befehl installiert alles nach `~/.local`, ohne
 - **Interaktiv** – Parallaxe und Effekte folgen der Maus (auch unter Fenstern), Audio-Visualizer
 - **Playlists** – Rotation im Intervall oder Tag/Nacht-Wechsel, pro Monitor
 - **Sperrbildschirm** – das Wallpaper des ersten Monitors läuft auch beim Sperren (abschaltbar)
-- **Unaufdringlich** – startet beim Login im Tray, schlichte App, Look komplett über `themes/*.json`
+- **Die Bühne** – die App zeigt immer ein Wallpaper live und fensterfüllend, bedient über eine schwebende
+  Leiste; Wallpaper, die dir nicht gefallen, blendest du mit `Entf` aus
+- **Unaufdringlich** – startet beim Login im Tray, rahmenloses Fenster, Oberfläche blendet sich bei Ruhe aus
 
 ## Installieren / Deinstallieren
 
@@ -41,16 +43,19 @@ Plasma hat dessen Einstellung behalten).
 
 - **Starten:** Startmenü → „Linux Wallpaper Engine“ oder `lwe`. Beim Login startet es automatisch
   im Hintergrund (Tray-Symbol: Linksklick öffnet, Mittelklick pausiert, Rechtsklick = Menü).
-- **Wallpaper setzen:** Kachel anklicken → rechts „Auf allen Bildschirmen“ oder einen Monitor anklicken.
-- **Vorschau:** Maus über eine Kachel halten → läuft live (inkl. Maus-Reaktion).
-- **Favoriten:** Herz auf der Kachel. Favoriten erscheinen auch im Tray-Menü.
-- **Playlists:** Seite „Monitore“ → Monitor wählen → „Rotation“ oder „Tag / Nacht“.
+- **Blättern:** `←` / `→`, Mausrad oder die Pfeile in der Leiste – das Wallpaper läuft dabei live im Fenster.
+- **Wallpaper setzen:** „Anwenden“ oder `Enter`. Ziel (alle oder ein Monitor): Einstellungen → Monitore.
+- **Felder unten:** Alle (`Leertaste`), Suchen (`/`), Anpassen (`A`), Einstellungen.
+- **Favoriten:** Herz in der Leiste oder `F`; im Feld „Alle“ filterbar und im Tray-Menü.
+- **Ausblenden:** Auge in der Leiste oder `Entf`; zurückholen unter Einstellungen → Ausgeblendet.
+- **Playlists:** Einstellungen → Automatisch wechseln → Monitor wählen → „Rotation“ oder „Tag / Nacht“.
+- **Fenster:** auf der freien Fläche ziehen verschiebt es, am Rand ziehen ändert die Größe.
 - Das Fenster zu schließen beendet nur die Oberfläche (spart RAM); Wallpaper, Tray und Playlists laufen weiter.
 
 ## Neues Wallpaper hinzufügen
 
-1. **Drag & Drop:** Dateien oder Ordner auf die Bibliothek ziehen.
-2. **Knöpfe:** „Importieren“ (Dateien) oder „Ordner“ (alles Passende darin, rekursiv).
+1. **Drag & Drop:** Dateien oder Ordner ins Fenster ziehen (Ordner: alles Passende darin, rekursiv).
+2. **Knopf:** Einstellungen → „Video, Bild oder Shader importieren“.
 3. **Kommandozeile:** `lwe import ~/Videos/meer.webm ~/Bilder/Wallpaper/`
 
 Unterstützt: Videos (`mp4 webm mkv mov m4v`), GIF, Bilder (`png jpg webp …`), Shader (`.frag .glsl`).
@@ -93,11 +98,6 @@ lwe pause | resume | toggle                      lwe list | screens
 lwe config fps 60        lwe config audio true   lwe quit | restore
 ```
 
-## Themes
-
-`themes/*.json` (mitgeliefert: Minimal (Standard), Neon Glass, Aurora Teal, Sunset Amber). Eigene Themes als JSON nach
-`~/.local/share/lwe/themes/` kopieren und unter Einstellungen → Aussehen wählen.
-
 ## Technik – und warum
 
 | Teil | Lösung | Warum |
@@ -122,7 +122,6 @@ app/lwe/                    Python-Backend (Bibliothek, Plasma-D-Bus, Playlists,
 app/qml/                    Oberfläche
 content/wallpapers/         mitgelieferte Wallpaper (Quelltext)
 docs/                       Screenshots
-themes/                     Theme-Dateien
 spike/                      Machbarkeitstest vom Projektstart
 tools/                      Entwickler-Werkzeuge (Kontaktbogen, Texturen)
 ```

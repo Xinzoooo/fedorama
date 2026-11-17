@@ -1,9 +1,8 @@
-"""Qt list models for the library grid. Changing one wallpaper (favourite, params) only
+"""Qt list model of the library. Changing one wallpaper (favourite, params) only
 updates its row instead of rebuilding the whole grid."""
 from __future__ import annotations
 
-from PySide6.QtCore import (Property, QAbstractListModel, QByteArray, QModelIndex,
-                            QSortFilterProxyModel, Qt, Signal)
+from PySide6.QtCore import QAbstractListModel, QByteArray, QModelIndex, Qt
 
 ROLES = ["wid", "title", "type", "thumb", "source", "favorite", "params", "tags",
          "description", "author", "license", "builtin", "error", "dir"]
@@ -42,49 +41,3 @@ class WallpaperModel(QAbstractListModel):
                 idx = self.index(i)
                 self.dataChanged.emit(idx, idx)
                 return
-
-
-class FilterModel(QSortFilterProxyModel):
-    searchChanged = Signal()
-    favoritesOnlyChanged = Signal()
-    countChanged = Signal()
-
-    def __init__(self, source):
-        super().__init__()
-        self._search = ""
-        self._fav = False
-        self.setSourceModel(source)
-        self.setDynamicSortFilter(True)
-        for sig in (self.rowsInserted, self.rowsRemoved, self.modelReset, self.layoutChanged):
-            sig.connect(self.countChanged)
-
-    def filterAcceptsRow(self, row, parent):
-        r = self.sourceModel().rows[row]
-        if self._fav and not r["favorite"]:
-            return False
-        if self._search:
-            hay = " ".join([r["title"], r["description"], r["type"], " ".join(r["tags"])]).lower()
-            return all(word in hay for word in self._search.lower().split())
-        return True
-
-    def _get_search(self):
-        return self._search
-
-    def _set_search(self, v):
-        if v != self._search:
-            self._search = v
-            self.invalidateFilter()
-            self.searchChanged.emit()
-
-    def _get_fav(self):
-        return self._fav
-
-    def _set_fav(self, v):
-        if v != self._fav:
-            self._fav = v
-            self.invalidateFilter()
-            self.favoritesOnlyChanged.emit()
-
-    search = Property(str, _get_search, _set_search, notify=searchChanged)
-    favoritesOnly = Property(bool, _get_fav, _set_fav, notify=favoritesOnlyChanged)
-    count = Property(int, lambda self: self.rowCount(), notify=countChanged)
