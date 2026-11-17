@@ -48,8 +48,8 @@ Videos werden automatisch in GPU-dekodierbares AV1 umgewandelt.
 ## Schnellstart
 
 ```bash
-git clone https://github.com/Xinzoooo/linux-wallpaper-engine.git
-cd linux-wallpaper-engine
+git clone https://github.com/Xinzoooo/fedorama.git
+cd fedorama
 ./install.sh
 ```
 
