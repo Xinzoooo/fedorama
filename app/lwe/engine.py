@@ -397,6 +397,7 @@ class Engine(QObject):
         w = self.lib.get(wid)
         d = w.to_dict()
         d["favorite"] = w.id in self.cfg.data["favorites"]
+        d["hidden"] = w.id in self.cfg.data["hidden"]
         d["params"] = self.merged_params(w.id)
         return d
 
@@ -528,6 +529,28 @@ class Engine(QObject):
         self.cfg.save()
         self._item_changed(wid)
 
+    @Slot(str, result=bool)
+    def toggleHidden(self, wid):
+        h = self.cfg.data["hidden"]
+        if wid in h:
+            h.remove(wid)
+        elif len(self.lib.items) - len(h) <= 1:     # keep at least one visible
+            return False
+        else:
+            h.append(wid)
+        self.cfg.save()
+        self._item_changed(wid)
+        return True
+
+    @Slot(str, result=bool)
+    def applyCurrent(self, wid):
+        """Apply to the monitor chosen in settings; fall back to all if it is gone."""
+        target = self.cfg.g["applyTarget"]
+        if target and target not in [s["name"] for s in self.screen_list()]:
+            self.toast.emit(f"Monitor {target} nicht gefunden – auf alle angewendet", "info")
+            target = ""
+        return self.apply_to(wid, target)
+
     @Slot("QVariantList", result=int)
     def importUrls(self, urls):
         total, errors = [], []
@@ -554,8 +577,9 @@ class Engine(QObject):
     def removeWallpaper(self, wid):
         ok = self.lib.remove(wid)
         if ok:
-            if wid in self.cfg.data["favorites"]:
-                self.cfg.data["favorites"].remove(wid)
+            for k in ("favorites", "hidden"):
+                if wid in self.cfg.data[k]:
+                    self.cfg.data[k].remove(wid)
             self.cfg.data["params"].pop(wid, None)
             self.cfg.save()
             self._rebuild()

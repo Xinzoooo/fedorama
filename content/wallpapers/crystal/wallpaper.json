@@ -9,5 +9,6 @@
     "bunt"
   ],
   "author": "Linux Wallpaper Engine",
-  "license": "MIT"
+  "license": "MIT",
+  "order": 15
 }

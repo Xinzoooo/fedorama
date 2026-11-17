@@ -34,6 +34,7 @@ class Wallpaper:
     preset: dict = field(default_factory=dict)
     builtin: bool = False
     optimized: bool = False
+    order: int = 999           # shipped wallpapers: position in the app (lower first)
     error: str = ""
 
     @property
@@ -58,7 +59,7 @@ class Wallpaper:
             "id": self.id, "title": self.title, "type": self.type, "description": self.description,
             "tags": self.tags, "author": self.author, "license": self.license,
             "builtin": self.builtin, "source": self.source, "thumb": self.thumb,
-            "error": self.error, "dir": str(self.dir),
+            "error": self.error, "dir": str(self.dir), "order": self.order,
         }
 
 
@@ -73,7 +74,7 @@ def _load(d: Path, builtin: bool) -> Wallpaper | None:
         dir=d, file=m.get("file", ""), description=m.get("description", ""),
         tags=list(m.get("tags", [])), author=m.get("author", ""), license=m.get("license", ""),
         defaults=dict(m.get("defaults", {})), preset=dict(m.get("preset", {})), builtin=builtin,
-        optimized=bool(m.get("optimized", False)),
+        optimized=bool(m.get("optimized", False)), order=int(m.get("order", 999)),
     )
     if w.type == "shader" and not (d / "shader.qsb").exists():
         w.error = "Shader nicht kompiliert"
@@ -101,7 +102,7 @@ class Library:
         return self.items.get(wid)
 
     def ordered(self) -> list[Wallpaper]:
-        return sorted(self.items.values(), key=lambda w: (w.builtin, w.title.lower()))
+        return sorted(self.items.values(), key=lambda w: (not w.builtin, w.order, w.title.lower()))
 
     # ------------------------------------------------------------- import
     def _unique_id(self, title: str) -> str:

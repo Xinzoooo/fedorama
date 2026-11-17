@@ -10,5 +10,6 @@
     "retro"
   ],
   "author": "Linux Wallpaper Engine",
-  "license": "MIT"
+  "license": "MIT",
+  "order": 16
 }

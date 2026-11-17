@@ -39,5 +39,6 @@
     "prefill": 200,
     "maxParticles": 700,
     "audioReact": 1.0
-  }
+  },
+  "order": 28
 }

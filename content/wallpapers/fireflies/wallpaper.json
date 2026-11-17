@@ -39,5 +39,6 @@
     "maxParticles": 400,
     "cursorGlow": true,
     "audioReact": 0.6
-  }
+  },
+  "order": 13
 }

@@ -22,6 +22,7 @@ DEFAULTS = {
         "bridgePort": 47811,
         "autostart": True,
         "lockscreen": True,
+        "applyTarget": "",        # "" = all screens, else a connector name
         "quality": "cruise",      # preset id from quality.py, or "custom"
         "renderMul": 1.0,
         "renderMax": 0.75,
@@ -30,6 +31,7 @@ DEFAULTS = {
     "screens": {},        # connector -> {"wallpaper": id}
     "playlists": {},      # connector -> {...}
     "favorites": [],
+    "hidden": [],         # wallpaper ids skipped in the app
     "params": {},         # wallpaper id -> overrides
 }
 

@@ -12,5 +12,6 @@
   "license": "MIT",
   "defaults": {
     "renderScale": 0.7
-  }
+  },
+  "order": 10
 }
