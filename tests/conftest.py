@@ -45,7 +45,7 @@ def eng(qapp, plasma_calls, monkeypatch, tmp_path):
     monkeypatch.setattr(paths, "CONFIG", tmp_path / "config.json")   # fresh config per test
 
     def screen_list(self):
-        return [dict(s, wallpaper=self.cfg.data["screens"].get(s["name"], {}).get("wallpaper", ""),
+        return [dict(s, active=True, wallpaper=self.cfg.data["screens"].get(s["name"], {}).get("wallpaper", ""),
                      playlist=self.cfg.playlist(s["name"])) for s in SCREENS]
     monkeypatch.setattr(Engine, "screen_list", screen_list)
     return Engine(headless=True)

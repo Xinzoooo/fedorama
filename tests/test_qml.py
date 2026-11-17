@@ -63,3 +63,20 @@ def test_all_panel_favorites_filter(qml_load, eng, qapp):
     _child(root, "favFilter").clicked.emit(); _settle(qapp)
     assert _child(root, "allStrip").property("count") == 1
     assert w == []
+
+
+def test_adjust_slider_sets_param(qml_load, eng, qapp):
+    root, w = qml_load("Main.qml", running="aurora")
+    root.setProperty("panel", "adjust"); _settle(qapp)
+    _child(root, "slider-brightness").moved.emit(1.2)
+    assert eng.params("aurora")["brightness"] == 1.2
+    assert w == []
+
+
+def test_adjust_reset(qml_load, eng, qapp):
+    eng.setParam("aurora", "hue", 40)
+    root, w = qml_load("Main.qml", running="aurora")
+    root.setProperty("panel", "adjust"); _settle(qapp)
+    _child(root, "resetParams").clicked.emit()
+    assert eng.params("aurora").get("hue", 0) == 0
+    assert w == []

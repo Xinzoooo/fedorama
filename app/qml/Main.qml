@@ -209,7 +209,8 @@ ApplicationWindow {
         anchors.fill: parent
         onDropped: (drop) => { if (drop.hasUrls) lwe.importUrls(drop.urls) }
     }
-    readonly property bool typing: panel === "search"
+    // while a text field has focus, letters, arrows, Enter and Space belong to it
+    readonly property bool typing: panel === "search" || (activeFocusItem !== null && activeFocusItem.cursorVisible !== undefined)
     Shortcut { sequence: "Left"; enabled: !win.typing; onActivated: win.step(-1) }
     Shortcut { sequence: "Right"; enabled: !win.typing; onActivated: win.step(1) }
     Shortcut { sequences: ["Return", "Enter"]; enabled: !win.typing; onActivated: win.applyCurrent() }
