@@ -11,7 +11,7 @@
 **Spec:** `docs/superpowers/specs/2026-11-17-feinschliff-design.md`
 
 ## Global Constraints
-- Tests: `cd ~/LinuxWallpaperEngine && QT_QPA_PLATFORM=offscreen python3 -m pytest tests -q` – alle grün nach jeder Task.
+- Tests: `cd ~/Projekte/fedorama && QT_QPA_PLATFORM=offscreen python3 -m pytest tests -q` – alle grün nach jeder Task.
 - Kein Effekt, der pro Bild läuft, für Rahmen/Schatten (kein `MultiEffect`-Blur/Shadow).
 - Dauern: Klick/Hover 50–70 ms, Standard 110 ms, Felder 160 ms, Überblendung 200 ms, Name 80 + 130 ms, Leiste ausblenden 180 ms.
 - Schwarz/Weiß; Rot `Theme.danger` nur für Schließen-Hover.
