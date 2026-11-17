@@ -127,4 +127,6 @@ spike/                      Machbarkeitstest vom Projektstart
 tools/                      Entwickler-Werkzeuge (Kontaktbogen, Texturen)
 ```
 
-Lizenz: MIT (siehe `LICENSE`). Alle mitgelieferten Shader, Icons und Texturen sind Eigenarbeit.
+Lizenz: MIT (siehe `LICENSE`). Alle mitgelieferten Shader und Texturen sind Eigenarbeit.
+Fremde Bestandteile: Icons von [Phosphor](https://phosphoricons.com) (MIT, `app/qml/icons/LICENSE-phosphor.txt`),
+Schriften Inter Tight und JetBrains Mono (SIL Open Font License, `app/qml/fonts/`).
