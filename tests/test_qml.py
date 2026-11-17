@@ -16,8 +16,17 @@ def test_stage_starts_at_running(qml_load):
 
 
 def _child(root, name):
+    """Find by objectName; Repeater delegates are only reachable through the visual item tree."""
     from PySide6.QtCore import QObject
+    from PySide6.QtQuick import QQuickItem
     o = root.findChild(QObject, name)
+    if o is None:
+        todo = [root.contentItem()] if hasattr(root, "contentItem") else list(root.findChildren(QQuickItem))
+        while todo and o is None:
+            it = todo.pop()
+            if it.objectName() == name:
+                o = it
+            todo.extend(it.childItems())
     assert o is not None, f"no object named {name}"
     return o
 
@@ -79,4 +88,32 @@ def test_adjust_reset(qml_load, eng, qapp):
     root.setProperty("panel", "adjust"); _settle(qapp)
     _child(root, "resetParams").clicked.emit()
     assert eng.params("aurora").get("hue", 0) == 0
+    assert w == []
+
+
+def test_settings_target_monitor(qml_load, eng, qapp):
+    root, w = qml_load("Main.qml")
+    root.setProperty("panel", "settings"); _settle(qapp)
+    _child(root, "target-DP-1").clicked.emit()
+    assert eng.settings["applyTarget"] == "DP-1"
+    _child(root, "target-all").clicked.emit()
+    assert eng.settings["applyTarget"] == ""
+    assert w == []
+
+
+def test_settings_unhide(qml_load, eng, qapp):
+    eng.toggleHidden("matrix-rain")
+    root, w = qml_load("Main.qml")
+    root.setProperty("panel", "settings"); _settle(qapp)
+    _child(root, "unhide-matrix-rain").clicked.emit()
+    assert "matrix-rain" not in eng.cfg.data["hidden"]
+    assert w == []
+
+
+def test_settings_playlist_mode(qml_load, eng, qapp):
+    root, w = qml_load("Main.qml")
+    root.setProperty("panel", "settings"); _settle(qapp)
+    _child(root, "playlist-interval").clicked.emit()
+    assert eng.cfg.playlist("DP-2")["enabled"] is True
+    assert eng.cfg.playlist("DP-2")["mode"] == "interval"
     assert w == []
