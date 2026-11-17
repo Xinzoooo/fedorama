@@ -1,5 +1,7 @@
 """Test setup: isolated data dir, offscreen Qt, no calls into the real Plasma session."""
+import atexit
 import os
+import shutil
 import sys
 import tempfile
 from pathlib import Path
@@ -8,6 +10,7 @@ import pytest
 
 # lwe.paths reads XDG_DATA_HOME at import time, so set it before anything imports lwe
 os.environ["XDG_DATA_HOME"] = tempfile.mkdtemp(prefix="lwe-test-")
+atexit.register(shutil.rmtree, os.environ["XDG_DATA_HOME"], True)   # leave nothing in /tmp
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "app"))

@@ -4,3 +4,4 @@ __pycache__/
 /build/
 content/wallpapers/*/thumb.jpg
 .superpowers/
+.pytest_cache/
