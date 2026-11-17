@@ -34,7 +34,15 @@ Item {
         clip: true
         model: panel.items
         boundsBehavior: Flickable.StopAtBounds
-        Component.onCompleted: positionViewAtIndex(Math.max(0, win.index), ListView.Center)
+        // follows the stage: the current wallpaper stays in the middle while stepping
+        currentIndex: {
+            for (var i = 0; i < panel.items.length; i++) if (panel.items[i].id === win.currentId) return i
+            return -1
+        }
+        highlightRangeMode: ListView.ApplyRange
+        preferredHighlightBegin: width / 2 - 75
+        preferredHighlightEnd: width / 2 + 75
+        highlightMoveDuration: Theme.anim
         delegate: Item {
             required property var modelData
             readonly property bool isCurrent: win.current && modelData.id === win.current.id

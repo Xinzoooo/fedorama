@@ -475,7 +475,7 @@ class Engine(QObject):
         h = self.cfg.data["hidden"]
         if wid in h:
             h.remove(wid)
-        elif len(self.lib.items) - len(h) <= 1:     # keep at least one visible
+        elif len([i for i in self.lib.items if i not in h]) <= 1:     # keep at least one visible (stale ids in h do not count)
             return False
         else:
             h.append(wid)

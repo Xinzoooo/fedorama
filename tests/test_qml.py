@@ -231,3 +231,32 @@ def test_animation_budget():
     assert durations and max(durations) <= 200
     theme = (qml / "Theme.qml").read_text()
     assert "fast: 70" in theme and "anim: 110" in theme and "slow: 200" in theme
+
+
+def test_tray_unloads_after_fast_close(qml_load, qapp):
+    from PySide6.QtTest import QTest
+    root, w = qml_load("Main.qml")
+    root.setProperty("panel", "search"); root.setProperty("panel", ""); _settle(qapp)
+    QTest.qWait(400)
+    assert root.property("typing") is False
+    assert _find(root, "searchField") is None
+    assert w == []
+
+
+def test_strip_follows_stage(qml_load, qapp):
+    from PySide6.QtTest import QTest
+    root, w = qml_load("Main.qml", running="synthwave")
+    root.setProperty("panel", "all"); QTest.qWait(300)
+    for _ in range(12):
+        _child(root, "nextButton").clicked.emit()
+    QTest.qWait(400)
+    assert _child(root, "allStrip").property("currentIndex") == root.property("index")
+    assert w == []
+
+
+def test_start_uses_first_screen_with_our_plugin(qml_load, eng, monkeypatch):
+    monkeypatch.setattr(type(eng), "screen_list", lambda self: [
+        {"name": "DP-2", "index": 0, "active": False, "wallpaper": "galaxy", "playlist": {}},
+        {"name": "HDMI-A-1", "index": 1, "active": True, "wallpaper": "aurora", "playlist": {}}])
+    root, _ = qml_load("Main.qml")
+    assert root.property("current")["id"] == "aurora"

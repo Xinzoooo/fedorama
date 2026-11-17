@@ -37,3 +37,10 @@ def test_apply_current_missing_target_falls_back_to_all(eng, plasma_calls, toast
 def test_no_theme_api(eng):
     assert not hasattr(eng, "themes")
     assert "theme" not in eng.settings
+
+
+def test_stale_hidden_ids_do_not_block(eng):
+    eng.cfg.data["hidden"] = ["gone-1", "gone-2"]
+    ids = [w["id"] for w in eng.wallpapers]
+    for i in ids[1:]:
+        assert eng.toggleHidden(i) is True

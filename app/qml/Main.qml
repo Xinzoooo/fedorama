@@ -36,7 +36,9 @@ ApplicationWindow {
             currentId = visibleList[Math.min(lastIndex, visibleList.length - 1)].id
     }
     function startIndex() {
-        var running = lwe.screens.length ? lwe.screens[0].wallpaper : ""
+        // same rule as the lock screen: the first monitor that runs one of ours
+        var s = lwe.screens.filter(function(x) { return x.active && x.wallpaper })
+        var running = s.length ? s[0].wallpaper : (lwe.screens.length ? lwe.screens[0].wallpaper : "")
         return Math.max(0, indexOf(running))
     }
     function step(d) {

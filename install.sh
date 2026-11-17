@@ -56,7 +56,7 @@ mkdir -p "$LWE/app" "$LWE/builtin" "$LWE/library" "$BIN"
 rm -rf "$LWE/app/app" "$LWE/app/themes"   # themes: removed in 2026-11, clean up old installs
 cp -r "$SRC/app" "$LWE/app/"
 find "$LWE/app" -name __pycache__ -type d -prune -exec rm -rf {} +
-ok "App + Themes"
+ok "App"
 
 step "Mitgelieferte Wallpaper"
 # keep already rendered thumbnails if the wallpaper did not change

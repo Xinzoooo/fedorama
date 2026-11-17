@@ -10,7 +10,12 @@ Rectangle {
     readonly property var files: ({ all: "AllPanel.qml", search: "SearchPanel.qml", adjust: "AdjustPanel.qml", settings: "SettingsPanel.qml" })
     readonly property real target: panel !== "" && ld.item ? Math.min(ld.item.implicitHeight + 44, maxHeight) : 0
 
-    onPanelChanged: if (panel !== "") shown = panel
+    onPanelChanged: {
+        if (panel !== "") { shown = panel; return }
+        if (height === 0) shown = ""                // closed before the open animation even started
+        unloadTimer.restart()
+    }
+    Timer { id: unloadTimer; interval: 200; onTriggered: if (tray.panel === "") tray.shown = "" }   // safety net after closing
     height: target
     Behavior on height { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
     onHeightChanged: if (height === 0 && panel === "") shown = ""
