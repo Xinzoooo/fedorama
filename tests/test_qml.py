@@ -196,3 +196,21 @@ def test_stage_render_scale_capped(qml_load, eng, qapp):
             scales.append(json.loads(it.paramsJson()).get("renderScale"))
         todo.extend(it.childItems())
     assert scales and all(s is not None and s <= 0.75 for s in scales)
+
+
+def _find(root, name):
+    try:
+        return _child(root, name)
+    except AssertionError:
+        return None
+
+
+def test_frame_margin_is_resize_only(qml_load, qapp):
+    from PySide6.QtCore import QPointF
+    root, w = qml_load("Main.qml")
+    m = root.property("shadowMargin")
+    assert m == 28
+    stage = _child(root, "stageBox")
+    assert stage.mapToScene(QPointF(0, 0)).x() == m
+    assert root.property("color").alpha() == 0          # transparent window
+    assert w == []

@@ -1,4 +1,4 @@
-// The app window: frameless, ambient frame, one wallpaper live on the stage.
+// The app window: frameless and floating (static shadow), one wallpaper live on the stage.
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
@@ -11,7 +11,7 @@ ApplicationWindow {
     visible: true
     title: "Linux Wallpaper Engine"
     flags: Qt.Window | Qt.FramelessWindowHint
-    color: "#0a0a0a"
+    color: "transparent"
     font.family: Theme.font
 
     // ------------------------------------------------------------ state
@@ -72,35 +72,24 @@ ApplicationWindow {
     FontLoader { source: "fonts/InterTight.ttf" }
     FontLoader { source: "fonts/JetBrainsMono.ttf" }
 
-    // ------------------------------------------------------------ ambient frame
-    // blurred still of the current wallpaper (never the live shader: costs nothing per frame)
+    // ------------------------------------------------------------ floating frame
+    // no border: the stage is the window; a static 9-slice shadow fills the transparent margin
+    readonly property int shadowMargin: 28
     Item {
-        id: ambient
+    id: frame                                        // shadow + stage (one item, so it can be grabbed whole)
+    anchors.fill: parent
+    BorderImage {
         anchors.fill: parent
-        anchors.margins: -40
-        visible: false
-        property string src: win.current && win.current.thumb ? "file://" + win.current.thumb : ""
-        property bool flip: false
-        onSrcChanged: { flip = !flip; (flip ? ambA : ambB).source = src }
-        Image { id: ambA; anchors.fill: parent; fillMode: Image.PreserveAspectCrop; sourceSize.width: 320; asynchronous: true
-                opacity: ambient.flip ? 1 : 0; Behavior on opacity { NumberAnimation { duration: Theme.slow } } }
-        Image { id: ambB; anchors.fill: parent; fillMode: Image.PreserveAspectCrop; sourceSize.width: 320; asynchronous: true
-                opacity: ambient.flip ? 0 : 1; Behavior on opacity { NumberAnimation { duration: Theme.slow } } }
-    }
-    MultiEffect {
-        anchors.fill: ambient
-        source: ambient
-        visible: ambient.src !== ""
-        blurEnabled: true; blur: 1.0; blurMax: 64
-        saturation: 0.5
-        brightness: -0.45
+        source: "images/shadow.png"
+        border { left: 56; right: 56; top: 56; bottom: 56 }
     }
 
     // ------------------------------------------------------------ stage
     Item {
         id: stageBox
+        objectName: "stageBox"
         anchors.fill: parent
-        anchors.margins: 9
+        anchors.margins: win.shadowMargin
 
         Item {
             id: stageClip
@@ -118,15 +107,15 @@ ApplicationWindow {
         Rectangle {
             id: stageMask
             anchors.fill: parent
-            radius: 13
+            radius: 14
             visible: false
             layer.enabled: true
         }
-        Rectangle {                                  // fine inner edge
+        Rectangle {                                  // hairline edge
             anchors.fill: parent
-            radius: 13
+            radius: 14
             color: "transparent"
-            border.color: Qt.rgba(1, 1, 1, 0.07)
+            border.color: Qt.rgba(1, 1, 1, 0.14)
         }
 
         HoverHandler { id: hover; onPointChanged: win.wake() }
@@ -174,6 +163,7 @@ ApplicationWindow {
             WinButton { icon: "close"; tip: "In den Tray"; danger: true; onClicked: win.close() }
         }
     }
+    }
 
     component WinButton: Rectangle {
         id: wb
@@ -189,20 +179,20 @@ ApplicationWindow {
         ToolTip.visible: ma.containsMouse; ToolTip.text: tip; ToolTip.delay: 600
     }
 
-    // ------------------------------------------------------------ resize edges (the 9 px frame)
+    // ------------------------------------------------------------ resize edges (the shadow margin)
     component Edge: MouseArea {
         property int edges
         hoverEnabled: true
         onPressed: win.startSystemResize(edges)
     }
-    Edge { edges: Qt.LeftEdge; anchors { left: parent.left; top: parent.top; bottom: parent.bottom; topMargin: 16; bottomMargin: 16 } width: 9; cursorShape: Qt.SizeHorCursor }
-    Edge { edges: Qt.RightEdge; anchors { right: parent.right; top: parent.top; bottom: parent.bottom; topMargin: 16; bottomMargin: 16 } width: 9; cursorShape: Qt.SizeHorCursor }
-    Edge { edges: Qt.TopEdge; anchors { top: parent.top; left: parent.left; right: parent.right; leftMargin: 16; rightMargin: 16 } height: 9; cursorShape: Qt.SizeVerCursor }
-    Edge { edges: Qt.BottomEdge; anchors { bottom: parent.bottom; left: parent.left; right: parent.right; leftMargin: 16; rightMargin: 16 } height: 9; cursorShape: Qt.SizeVerCursor }
-    Edge { edges: Qt.LeftEdge | Qt.TopEdge; width: 16; height: 16; cursorShape: Qt.SizeFDiagCursor }
-    Edge { edges: Qt.RightEdge | Qt.TopEdge; x: parent.width - 16; width: 16; height: 16; cursorShape: Qt.SizeBDiagCursor }
-    Edge { edges: Qt.LeftEdge | Qt.BottomEdge; y: parent.height - 16; width: 16; height: 16; cursorShape: Qt.SizeBDiagCursor }
-    Edge { edges: Qt.RightEdge | Qt.BottomEdge; x: parent.width - 16; y: parent.height - 16; width: 16; height: 16; cursorShape: Qt.SizeFDiagCursor }
+    Edge { edges: Qt.LeftEdge; anchors { left: parent.left; top: parent.top; bottom: parent.bottom; topMargin: win.shadowMargin; bottomMargin: win.shadowMargin } width: win.shadowMargin; cursorShape: Qt.SizeHorCursor }
+    Edge { edges: Qt.RightEdge; anchors { right: parent.right; top: parent.top; bottom: parent.bottom; topMargin: win.shadowMargin; bottomMargin: win.shadowMargin } width: win.shadowMargin; cursorShape: Qt.SizeHorCursor }
+    Edge { edges: Qt.TopEdge; anchors { top: parent.top; left: parent.left; right: parent.right; leftMargin: win.shadowMargin; rightMargin: win.shadowMargin } height: win.shadowMargin; cursorShape: Qt.SizeVerCursor }
+    Edge { edges: Qt.BottomEdge; anchors { bottom: parent.bottom; left: parent.left; right: parent.right; leftMargin: win.shadowMargin; rightMargin: win.shadowMargin } height: win.shadowMargin; cursorShape: Qt.SizeVerCursor }
+    Edge { edges: Qt.LeftEdge | Qt.TopEdge; width: win.shadowMargin; height: win.shadowMargin; cursorShape: Qt.SizeFDiagCursor }
+    Edge { edges: Qt.RightEdge | Qt.TopEdge; x: parent.width - width; width: win.shadowMargin; height: win.shadowMargin; cursorShape: Qt.SizeBDiagCursor }
+    Edge { edges: Qt.LeftEdge | Qt.BottomEdge; y: parent.height - height; width: win.shadowMargin; height: win.shadowMargin; cursorShape: Qt.SizeBDiagCursor }
+    Edge { edges: Qt.RightEdge | Qt.BottomEdge; x: parent.width - width; y: parent.height - height; width: win.shadowMargin; height: win.shadowMargin; cursorShape: Qt.SizeFDiagCursor }
 
     // ------------------------------------------------------------ input
     DropArea {
